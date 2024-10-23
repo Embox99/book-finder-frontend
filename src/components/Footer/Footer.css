@@ -1,0 +1,14 @@
+.footer {
+  display: flex;
+  margin-top: 85px;
+  font-family: "Cabinet Grotesk";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: left;
+  padding: 0 5vh;
+}
+
+.footer__year {
+  margin-left: auto;
+}
