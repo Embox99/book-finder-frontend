@@ -1,0 +1,11 @@
+.main-container {
+  height: 100vh;
+  background: linear-gradient(rgba(47, 147, 226, 0.4), rgba(47, 147, 226, 0.2)),
+    url("../../assets/pexels-esma-nur-63700357-11201148.jpg") center/cover
+      no-repeat;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
