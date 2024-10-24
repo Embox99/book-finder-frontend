@@ -1,14 +1,21 @@
 .footer {
-  display: flex;
-  margin-top: 85px;
+  color: #fff;
   font-family: "Cabinet Grotesk";
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
   text-align: left;
   padding: 0 5vh;
+  height: 15vh;
+  background: linear-gradient(rgba(47, 147, 226, 0.7), rgba(47, 147, 226, 0.5)),
+    url("../../assets/pexels-esma-nur-63700357-11201148.jpg") center/cover
+      no-repeat;
 }
 
-.footer__year {
+.footer__description {
+  display: flex;
+}
+
+.footer__description-year {
   margin-left: auto;
 }
