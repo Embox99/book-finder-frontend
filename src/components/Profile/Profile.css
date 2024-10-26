@@ -1,0 +1,11 @@
+.profile {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.profile__content {
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+}

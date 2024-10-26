@@ -1,15 +1,16 @@
 import "./Profile.css";
-import BookSection from "../BookSection/BookSection";
 import Navigation from "../Navigation/Navigation";
+import ProfileSection from "../ProfileSection/ProfileSection";
 
 function Profile() {
   return (
     <div className="profile">
-      <div className="profile__navigation">
+      <div className="profile__content">
         <Navigation />
-      </div>
-      <div className="profile__book-section">
-        <BookSection />
+        <ProfileSection id="favorites" title="Your favorite books" />
+        <ProfileSection id="read-books" title="Finished books"/>
+        <ProfileSection id="came-out-today" title="Books that was published on this day" />
+        <div className="profile__goals" id="goals"></div>
       </div>
     </div>
   );
