@@ -6,6 +6,16 @@
 
 .profile__content {
   flex-grow: 1;
+  margin-left: 27vh; /* Оставляем место для боковой панели */
   padding: 20px;
   width: 100%;
+}
+
+.profile__sidebar {
+  margin-top: 20px;
+  width: 25vh;
+  background-color: white;
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
 }

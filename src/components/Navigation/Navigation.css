@@ -3,16 +3,17 @@
   justify-content: flex-end;
   background-color: rgba(47, 147, 226, 0.5);
   padding: 10px;
-  max-width: 800px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .navigation__list {
+  display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
   align-items: center;
+  justify-content: space-between; /* Элементы будут распределены по ширине */
+  width: 100%;
 }
 
 .navigation__item {
