@@ -31,7 +31,7 @@ function Profile() {
         <ProfileSection id="read-books" title="Finished books" />
         <ProfileSection
           id="year-of-birth"
-          title="Books that came out on your year of birth"
+          title="Popular books that came out on your year of birth"
           books={yearBooks}
         />
         <div className="profile__goals" id="goals"></div>

@@ -1,14 +1,14 @@
 .profile {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .profile__content {
   flex-grow: 1;
-  margin-left: 27vh; /* Оставляем место для боковой панели */
-  padding: 20px;
-  width: 100%;
+  margin-left: 27vh;
+  padding: 30px;
+  box-sizing: border-box;
 }
 
 .profile__sidebar {
@@ -17,5 +17,5 @@
   background-color: white;
   padding: 20px;
   position: fixed;
-  height: 100vh;
+  height: calc(100% - 20px);
 }

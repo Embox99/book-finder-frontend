@@ -8,7 +8,7 @@ function ProfileSection({ id, title, books = [] }) {
         {books.length > 0 ? (
           books.map((book) => (
             <div key={book.id} className="profile-section__book">
-              <h3>{book.volumeInfo.title}</h3>
+              <h3 className="profile-section__book-title">{book.volumeInfo.title}</h3>
               <p>{book.volumeInfo.authors?.join(", ")}</p>
               <img
                 src={book.volumeInfo.imageLinks?.thumbnail}

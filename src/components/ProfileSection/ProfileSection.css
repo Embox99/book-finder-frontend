@@ -13,6 +13,15 @@
   color: #333;
 }
 
+.profile-section__book-title {
+  font-size: 1.2em;
+  color: #333;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .profile-section__books {
   display: flex;
   flex-wrap: wrap;
