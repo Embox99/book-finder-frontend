@@ -14,8 +14,8 @@ function Profile() {
         <ProfileSection id="favorites" title="Your favorite books" />
         <ProfileSection id="read-books" title="Finished books" />
         <ProfileSection
-          id="came-out-today"
-          title="Books that was published on this day"
+          id="year-of-birth"
+          title="Books that came out on your year of birth"
         />
         <div className="profile__goals" id="goals"></div>
       </div>

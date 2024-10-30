@@ -11,7 +11,7 @@ function Navigation() {
           <a href="#read-books">Finished Books</a>
         </li>
         <li className="navigation__item">
-          <a href="#came-out-today">Published on this day</a>
+          <a href="#year-of-birth">Birth year</a>
         </li>
         <li className="navigation__item">
           <a href="#goals">You goals</a>
