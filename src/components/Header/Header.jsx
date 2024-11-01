@@ -1,7 +1,6 @@
 import "./Header.css";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import logo from "../../assets/header-logo.png";
+import logo from "../../assets/header-logo(new).png";
 
 function Header() {
   return (
@@ -10,12 +9,12 @@ function Header() {
         <img src={logo} alt="header-logo" className="header__logo" />
       </Link>
       <div className="header__btn-container">
-      <button type="button" className="header__btn">
-        Sign Up
-      </button>
-      <button type="button" className="header__btn">
-        Log in
-      </button>
+        <button type="button" className="header__btn">
+          Sign Up
+        </button>
+        <button type="button" className="header__btn">
+          Log in
+        </button>
       </div>
     </header>
   );

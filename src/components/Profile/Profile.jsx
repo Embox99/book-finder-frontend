@@ -12,7 +12,6 @@ function Profile() {
     getBookByYear(2021)
       .then((data) => {
         if (data && data.length > 0) {
-          console.log("Books data:", data); // Добавьте логирование для проверки данных
           setYearBooks(data);
         } else {
           console.error("No books found for the specified year");
@@ -20,6 +19,8 @@ function Profile() {
       })
       .catch((error) => console.error("Error when receiving books:", error));
   }, []);
+
+
   return (
     <div className="profile">
       <div className="profile__sidebar">

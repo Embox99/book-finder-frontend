@@ -1,8 +1,9 @@
 .main-container {
-  height: 100vh;
+  min-height: calc(100vh - 15vh);
   color: white;
   font-family: "Cabinet Grotesk";
   font-weight: 700;
+  padding-bottom: 20px;
 }
 
 .main__search-tool {
@@ -16,6 +17,7 @@
   align-items: center;
 }
 
-.main__book-catalog {
-  height: 35vh;
+.main__content {
+  flex-grow: 1;
+  padding: 20px;
 }

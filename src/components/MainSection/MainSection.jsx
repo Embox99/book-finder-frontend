@@ -1,14 +1,14 @@
-import "./ProfileSection.css";
+import "./MainSection.css";
 
-function ProfileSection({ id, title, books = [] }) {
+function MainSection({ title, books = [] }) {
   return (
-    <div id={id} className="profile-section">
+    <div className="main-section">
       <h2>{title}</h2>
-      <div className="profile-section__books">
+      <div className="main-section__books">
         {books.length > 0 ? (
           books.map((book) => (
-            <div key={book.id} className="profile-section__book">
-              <h3 className="profile-section__book-title">
+            <div key={book.id} className="main-section__book">
+              <h3 className="main-section__book-title">
                 {book.volumeInfo.title}
               </h3>
               <p>{book.volumeInfo.authors?.join(", ")}</p>
@@ -26,4 +26,4 @@ function ProfileSection({ id, title, books = [] }) {
   );
 }
 
-export default ProfileSection;
+export default MainSection;

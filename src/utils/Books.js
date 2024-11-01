@@ -3,7 +3,9 @@ import { checServerResponce } from "./Api";
 const API_KEY = "AIzaSyDS87FTNMkojvpmlUKiA8qLbIm8NrYqGhQ";
 
 export const searchBooks = async (query) => {
-  fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`)
+  return fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
+  )
     .then(checServerResponce)
     .then((data) => data.items)
     .catch((error) => {
@@ -13,11 +15,17 @@ export const searchBooks = async (query) => {
 };
 
 export const getPopularBooks = async () => {
-  fetch(
+  return fetch(
     `https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=relevance&key=${API_KEY}`
   )
     .then(checServerResponce)
-    .then((data) => data.items.sort(() => 0.5 - Math.random()).slice(0, 5))
+    .then((data) => {
+      if (data.items) {
+        return data.items.sort(() => 0.5 - Math.random()).slice(0, 5);
+      } else {
+        return [];
+      }
+    })
     .catch((error) => {
       console.error("Error executing the request:", error);
       return [];
