@@ -19,3 +19,16 @@
   position: fixed;
   height: calc(100% - 20px);
 }
+
+.profile__goals-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.profile__goals-btn:hover {
+  background-color: black;
+  color: white;
+}

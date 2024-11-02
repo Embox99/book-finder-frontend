@@ -1,0 +1,67 @@
+.book-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.book-modal__content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+
+.book-modal__close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.book-modal__title {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+}
+
+.book-modal__image {
+  max-width: 100%;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.book-modal__description {
+  font-size: 1em;
+  margin-bottom: 15px;
+}
+
+.book-modal__buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.book-modal__favorite-btn,
+.book-modal__read-btn {
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.book-modal__favorite-btn:hover,
+.book-modal__read-btn:hover {
+  background-color: black;
+  color: white;
+}

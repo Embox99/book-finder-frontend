@@ -9,9 +9,6 @@ function Sidebar() {
       <button type="button" className="sidebar__btn sidebar__logout-btn">
         Log out
       </button>
-      <button type="button" className="sidebar__btn sidebar__goal-btn">
-        Set your goal
-      </button>
     </div>
   );
 }
