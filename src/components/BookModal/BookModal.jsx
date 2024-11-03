@@ -1,9 +1,18 @@
 import "./BookModal.css";
 
-function BookModal({ book, isOpen, onClose, onAddToFavorites, markAsRead }) {
+function BookModal({
+  book,
+  isOpen,
+  onClose,
+  onAddToFavorites,
+  markAsRead,
+  readBooks = [],
+}) {
   if (!isOpen) {
     return null;
   }
+
+  const { volumeInfo } = book;
 
   return (
     <div className="book-modal">
@@ -11,26 +20,34 @@ function BookModal({ book, isOpen, onClose, onAddToFavorites, markAsRead }) {
         <button className="book-modal__close-btn" onClick={onClose}>
           ×
         </button>
-        <h2 className="book-modal__title">{book.volumeInfo.title}</h2>
-        <img
-          className="book-modal__image"
-          src={book.volumeInfo.imageLinks?.thumbnail}
-          alt={`${book.volumeInfo.title} cover`}
-        />
-        <p className="book-modal__description">{book.volumeInfo.description}</p>
+        <h2 className="book-modal__title">
+          {volumeInfo?.title || "No Title Available"}
+        </h2>
+        {volumeInfo?.imageLinks?.thumbnail && (
+          <img
+            className="book-modal__image"
+            src={volumeInfo.imageLinks.thumbnail}
+            alt={`${volumeInfo.title} cover`}
+          />
+        )}
+        <p className="book-modal__description">
+          {volumeInfo?.description || "No description available"}
+        </p>
         <div className="book-modal__buttons">
           <button
             className="book-modal__favorite-btn"
-            onClick={() => onAddToFavorites(book)}
+            onClick={() => onAddToFavorites(book.id)}
           >
             Add to Favorites
           </button>
-          <button
-            className="book-modal__read-btn"
-            onClick={() => markAsRead(book)}
-          >
-            Mark as Read
-          </button>
+          {!readBooks.includes(book.id) && (
+            <button
+              className="book-modal__read-btn"
+              onClick={() => markAsRead(book.id)}
+            >
+              Mark as Read
+            </button>
+          )}
         </div>
       </div>
     </div>

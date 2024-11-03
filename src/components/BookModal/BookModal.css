@@ -42,6 +42,9 @@
 }
 
 .book-modal__description {
+  font-family: "Cabinet Grotesk";
+  font-weight: 400;
+  color: black;
   font-size: 1em;
   margin-bottom: 15px;
 }

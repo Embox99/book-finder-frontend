@@ -21,7 +21,7 @@ export const getPopularBooks = async () => {
     .then(checServerResponce)
     .then((data) => {
       if (data.items) {
-        return data.items.sort(() => 0.5 - Math.random()).slice(0, 5);
+        return data.items.sort(() => 0.5 - Math.random()).slice(0, 10);
       } else {
         return [];
       }
