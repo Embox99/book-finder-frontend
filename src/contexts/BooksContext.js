@@ -75,9 +75,27 @@ export const BooksProvider = ({ children }) => {
     });
   };
 
+  const toggleFavorite = (bookId) => {
+    if (favorites.includes(bookId)) {
+      setFavorites((prev) => prev.filter((id) => id !== bookId));
+    } else {
+      setFavorites((prev) => [...prev, bookId]);
+    }
+  };
+
+  const toggleRead = (bookId) => {
+    setReadBooks((prev) =>
+      prev.includes(bookId)
+        ? prev.filter((id) => id !== bookId)
+        : [...prev, bookId]
+    );
+  };
+
   return (
     <BooksContext.Provider
       value={{
+        toggleRead,
+        toggleFavorite,
         allBooks,
         readBooks,
         favorites,

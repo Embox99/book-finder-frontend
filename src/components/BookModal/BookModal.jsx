@@ -4,8 +4,9 @@ function BookModal({
   book,
   isOpen,
   onClose,
-  onAddToFavorites,
-  markAsRead,
+  toggleFavorite,
+  toggleRead,
+  favorites = [],
   readBooks = [],
 }) {
   if (!isOpen) {
@@ -36,18 +37,18 @@ function BookModal({
         <div className="book-modal__buttons">
           <button
             className="book-modal__favorite-btn"
-            onClick={() => onAddToFavorites(book.id)}
+            onClick={() => toggleFavorite(book.id)}
           >
-            Add to Favorites
+            {favorites.includes(book.id)
+              ? "Remove from Favorites"
+              : "Add to Favorites"}
           </button>
-          {!readBooks.includes(book.id) && (
-            <button
-              className="book-modal__read-btn"
-              onClick={() => markAsRead(book.id)}
-            >
-              Mark as Read
-            </button>
-          )}
+          <button
+            className="book-modal__read-btn"
+            onClick={() => toggleRead(book.id)}
+          >
+            {readBooks.includes(book.id) ? "Remove from Read" : "Mark as Read"}
+          </button>
         </div>
       </div>
     </div>

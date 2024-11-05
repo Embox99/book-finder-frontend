@@ -6,7 +6,8 @@ import { useBooks } from "../../contexts/BooksContext";
 function BookSection({ id, title, books = [] }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { markAsRead, onAddToFavorites, readBooks } = useBooks();
+  const { markAsRead, toggleFavorite, favorites, readBooks, toggleRead } =
+    useBooks();
 
   const handleBookClick = (book) => {
     setSelectedBook(book);
@@ -50,8 +51,10 @@ function BookSection({ id, title, books = [] }) {
           book={selectedBook}
           isOpen={isModalOpen}
           onClose={handleModalClose}
+          toggleFavorite={toggleFavorite}
+          toggleRead={toggleRead}
           markAsRead={markAsRead}
-          onAddToFavorites={onAddToFavorites}
+          favorites={favorites}
           readBooks={readBooks}
         />
       )}
