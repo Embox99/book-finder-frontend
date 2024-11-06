@@ -6,18 +6,21 @@
 
 .profile__content {
   flex-grow: 1;
-  margin-left: 27vh;
+  margin-left: 22%;
   padding: 30px;
   box-sizing: border-box;
 }
 
 .profile__sidebar {
   margin-top: 20px;
-  width: 25vh;
+  width: 20%;
+  max-width: 300px;
+  min-width: 200px;
   background-color: white;
   padding: 20px;
   position: fixed;
   height: calc(100% - 20px);
+  box-sizing: border-box;
 }
 
 .profile__goals {
@@ -57,7 +60,7 @@
 }
 
 .profile__goal-achieved {
-  background-color: #e0ffe0; 
+  background-color: #e0ffe0;
   padding: 15px;
   border-radius: 10px;
   color: #007b00;
@@ -92,4 +95,33 @@
 .profile__goals-btn--set:hover {
   background-color: #218838;
   transform: scale(1.05);
+}
+
+@media (max-width: 1100px) {
+  .profile {
+    flex-direction: column;
+  }
+
+  .profile__sidebar {
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 30px;
+  }
+
+  .profile__content {
+    margin-left: 0;
+    padding-top: 20px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .profile__sidebar {
+    width: 300px;
+  }
+
+  .profile__content {
+    margin-left: 320px;
+  }
 }

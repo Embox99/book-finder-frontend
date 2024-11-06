@@ -20,18 +20,18 @@ function BookSection({ id, title, books = [] }) {
   };
 
   return (
-    <div id={id} className="profile-section">
+    <div id={id} className="book-section">
       <h2>{title}</h2>
-      <div className="profile-section__books">
+      <div className="book-section__books">
         {books.length > 0 ? (
           books.map((book) =>
             book && book.volumeInfo ? (
               <div
                 key={book.id}
-                className="profile-section__book"
+                className="book-section__book"
                 onClick={() => handleBookClick(book)}
               >
-                <h3 className="profile-section__book-title">
+                <h3 className="book-section__book-title">
                   {book.volumeInfo.title}
                 </h3>
                 <p>{book.volumeInfo.authors?.join(", ")}</p>

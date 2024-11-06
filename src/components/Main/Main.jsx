@@ -12,7 +12,7 @@ function Main() {
     popularBooks,
     setPopularBooks,
     searchResults,
-    setSearchResult,
+    setSearchResults,
     addBooks,
   } = useBooks();
 
@@ -35,7 +35,7 @@ function Main() {
     setIsSearching(true);
     searchBooks(query)
       .then((results) => {
-        setSearchResult(results);
+        setSearchResults(results);
         addBooks(results);
         setIsSearching(false);
       })

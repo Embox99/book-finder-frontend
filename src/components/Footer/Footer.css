@@ -3,13 +3,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   font-family: "Cabinet Grotesk";
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-  text-align: left;
-  padding: 0 5vh;
-  height: 15vh;
+  text-align: center;
+  padding: 20px;
+  height: auto;
   background: linear-gradient(rgba(47, 147, 226, 0.7), rgba(47, 147, 226, 0.5)),
     url("../../assets/pexels-esma-nur-63700357-11201148.jpg") center/cover
       no-repeat;
@@ -18,8 +19,34 @@
 
 .footer__description {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.footer__description-author {
+  margin-right: 10px;
 }
 
 .footer__description-year {
-  margin-left: auto;
+  margin-left: 10px;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 14px;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .footer__description {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer__description-author,
+  .footer__description-year {
+    margin: 5px 0;
+  }
 }
