@@ -1,45 +1,19 @@
-import { useBooks } from "../../contexts/BooksContext";
 import "./Profile.css";
 import Navigation from "../Navigation/Navigation";
 import BookSection from "../BookSection/BookSection";
 import Sidebar from "../SideBar/SideBar";
-import SetGoalModal from "../SetGoalModal/SetGoalModal";
-import { useState, useEffect } from "react";
-import { getBookByYear } from "../../utils/Books";
 
-function Profile() {
-  const {
-    allBooks,
-    readBooks,
-    favorites,
-    readingGoal,
-    goalAchieved,
-    markAsRead,
-    setGoal,
-    popularBooks,
-    searchResults,
-  } = useBooks();
-  const [yearBooks, setYearBooks] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    getBookByYear(2021)
-      .then((data) => {
-        if (data && data.length > 0) {
-          setYearBooks(data);
-        } else {
-          console.error("No books found for the specified year");
-        }
-      })
-      .catch((error) => console.error("Error when receiving books:", error));
-  }, []);
-
-  const findBookById = (bookId) =>
-    yearBooks.find((book) => book.id === bookId) ||
-    popularBooks.find((book) => book.id === bookId) ||
-    searchResults.find((book) => book.id === bookId) ||
-    allBooks.find((book) => book.id === bookId);
-
+function Profile({
+  readingGoal,
+  goalAchieved,
+  readBooks,
+  favorites,
+  findBookById,
+  markAsRead,
+  yearBooks,
+  handleBookClick,
+  handleGoalClick,
+}) {
   return (
     <div className="profile">
       <div className="profile__sidebar">
@@ -63,14 +37,12 @@ function Profile() {
               </p>
               {goalAchieved && (
                 <div className="profile__goal-achieved">
-                  <p>
-                     Congratulations! You've achieved your reading goal!
-                  </p>
+                  <p>Congratulations! You've achieved your reading goal!</p>
                 </div>
               )}
               <button
                 className="profile__goals-btn profile__goals-btn--change"
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleGoalClick}
               >
                 Change the goal
               </button>
@@ -78,34 +50,32 @@ function Profile() {
           ) : (
             <button
               className="profile__goals-btn profile__goals-btn--set"
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleGoalClick}
             >
               Set your reading goal
             </button>
           )}
-          <SetGoalModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSave={setGoal}
-          />
         </div>
         <BookSection
           id="favorites"
           title="Your favorite books"
           books={favorites.map(findBookById)}
           markAsRead={markAsRead}
+          handleBookClick={handleBookClick}
         />
         <BookSection
           id="read-books"
           title="Finished books"
           books={readBooks.map(findBookById)}
           markAsRead={markAsRead}
+          handleBookClick={handleBookClick}
         />
         <BookSection
           id="year-of-birth"
           title="Popular books that came out on your year of birth"
           books={yearBooks}
           markAsRead={markAsRead}
+          handleBookClick={handleBookClick}
         />
       </div>
     </div>

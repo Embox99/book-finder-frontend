@@ -1,24 +1,6 @@
-import { useState } from "react";
 import "./BookSection.css";
-import BookModal from "../BookModal/BookModal";
-import { useBooks } from "../../contexts/BooksContext";
 
-function BookSection({ id, title, books = [] }) {
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { markAsRead, toggleFavorite, favorites, readBooks, toggleRead } =
-    useBooks();
-
-  const handleBookClick = (book) => {
-    setSelectedBook(book);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedBook(null);
-  };
-
+function BookSection({ id, title, books = [], handleBookClick }) {
   return (
     <div id={id} className="book-section">
       <h2>{title}</h2>
@@ -46,18 +28,6 @@ function BookSection({ id, title, books = [] }) {
           <p>There are no available books</p>
         )}
       </div>
-      {selectedBook && (
-        <BookModal
-          book={selectedBook}
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          toggleFavorite={toggleFavorite}
-          toggleRead={toggleRead}
-          markAsRead={markAsRead}
-          favorites={favorites}
-          readBooks={readBooks}
-        />
-      )}
     </div>
   );
 }
