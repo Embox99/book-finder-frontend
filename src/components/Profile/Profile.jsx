@@ -13,11 +13,12 @@ function Profile({
   yearBooks,
   handleBookClick,
   handleGoalClick,
+  handleUpdateProfileClick
 }) {
   return (
     <div className="profile">
       <div className="profile__sidebar">
-        <Sidebar />
+        <Sidebar handleUpdateProfileClick={handleUpdateProfileClick}/>
       </div>
       <div className="profile__content">
         <Navigation />

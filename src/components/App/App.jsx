@@ -8,6 +8,9 @@ import Profile from "../Profile/Profile";
 import "./App.css";
 import BookModal from "../BookModal/BookModal";
 import SetGoalModal from "../SetGoalModal/SetGoalModal";
+import LoginModal from "../LoginModal/LoginModal";
+import RegistrationModal from "../RegistrationModal/RegistrationModal";
+import UpdateProfile from "../UpdateProfileModal/UpdateProfileModal";
 
 function App() {
   const [isSearching, setIsSearching] = useState(false);
@@ -71,12 +74,7 @@ function App() {
 
   const markAsRead = (bookId) => {
     if (!readBooks.includes(bookId)) {
-      const updatedReadBooks = [...readBooks, bookId];
-      setReadBooks(updatedReadBooks);
-
-      if (readingGoal && updatedReadBooks.length >= readingGoal) {
-        setGoalAchieved(true);
-      }
+      setReadBooks((prevReadBooks) => [...prevReadBooks, bookId]);
     }
   };
 
@@ -87,6 +85,18 @@ function App() {
 
   const handleGoalClick = () => {
     setActiveModal("goal");
+  };
+
+  const handleLoginClick = () => {
+    setActiveModal("login");
+  };
+
+  const handleRegistrationClick = () => {
+    setActiveModal("registration");
+  };
+
+  const handleUpdateProfileClick = () => {
+    setActiveModal("update-profile");
   };
 
   const handleModalClose = () => {
@@ -127,6 +137,14 @@ function App() {
   };
 
   useEffect(() => {
+    if (readingGoal && readBooks.length >= readingGoal) {
+      setGoalAchieved(true);
+    } else {
+      setGoalAchieved(false);
+    }
+  }, [readBooks, readingGoal]);
+
+  useEffect(() => {
     if (!popularBooks.length) {
       getPopularBooks()
         .then((data) => {
@@ -162,22 +180,14 @@ function App() {
       }
     };
 
-    const handleClickOutside = (event) => {
-      if (activeModal && !event.target.closest(".modal")) {
-        handleModalClose();
-      }
-    };
     if (activeModal) {
       document.addEventListener("keydown", handleKeyDown);
-      document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [activeModal]);
 
@@ -185,7 +195,10 @@ function App() {
     <BrowserRouter>
       <div className="page">
         <div className="page__content">
-          <Header />
+          <Header
+            handleLoginClick={handleLoginClick}
+            handleRegistrationClick={handleRegistrationClick}
+          />
           <Routes>
             <Route
               path="/"
@@ -213,6 +226,7 @@ function App() {
                   yearBooks={yearBooks}
                   handleBookClick={handleBookClick}
                   handleGoalClick={handleGoalClick}
+                  handleUpdateProfileClick={handleUpdateProfileClick}
                 />
               }
             />
@@ -238,6 +252,21 @@ function App() {
             onSave={setGoal}
             className="modal"
           />
+        )}
+        {activeModal === "login" && (
+          <LoginModal
+            onClose={handleModalClose}
+            redirectButtonClick={handleRegistrationClick}
+          />
+        )}
+        {activeModal === "registration" && (
+          <RegistrationModal
+            onClose={handleModalClose}
+            redirectButtonClick={handleLoginClick}
+          />
+        )}
+        {activeModal === "update-profile" && (
+          <UpdateProfile onClose={handleModalClose} />
         )}
       </div>
     </BrowserRouter>
