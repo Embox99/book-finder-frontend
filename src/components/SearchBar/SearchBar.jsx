@@ -14,6 +14,12 @@ function SearchBar({ onSearch }) {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="search-bar">
       <input
@@ -21,6 +27,7 @@ function SearchBar({ onSearch }) {
         className="search-bar__input"
         value={query}
         onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
         placeholder="Enter book title or author"
       />
       <button className="search-bar__button" onClick={handleSearch}>

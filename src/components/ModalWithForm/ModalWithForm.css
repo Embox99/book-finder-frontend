@@ -48,10 +48,15 @@
   cursor: pointer;
   color: #666;
   transition: color 0.2s;
+  transition: transform 0.7s, filter 0.7s ease-in-out;
 }
 
-.modal__close-btn:hover {
-  color: #000;
+.modal__close-btn-img {
+  transition: transform 0.7s, filter 0.7s ease-in-out;
+}
+
+.modal__close-btn:hover .modal__close-btn-img {
+  content: url("../../assets/modal-close-button-hover.svg");
 }
 
 .modal__form {
