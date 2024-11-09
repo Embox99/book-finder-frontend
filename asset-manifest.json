@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.b10eb3cd.css",
-    "main.js": "/static/js/main.da974b4e.js",
-    "static/js/453.61d2d260.chunk.js": "/static/js/453.61d2d260.chunk.js",
-    "static/media/pexels-esma-nur-63700357-11201148.jpg": "/static/media/pexels-esma-nur-63700357-11201148.fe32125013d79dd946ef.jpg",
-    "static/media/header-logo(new).png": "/static/media/header-logo(new).55363e8e3101391dd42f.png",
-    "static/media/CabinetGrotesk-Bold.otf": "/static/media/CabinetGrotesk-Bold.2619526040c3adf53b83.otf",
-    "static/media/CabinetGrotesk-Medium.otf": "/static/media/CabinetGrotesk-Medium.b8b578586abc9d55dcda.otf",
-    "static/media/modal-close-button.svg": "/static/media/modal-close-button.dcddfede664628516ef675e795ba4b0d.svg",
-    "static/media/modal-close-button-hover.svg": "/static/media/modal-close-button-hover.f9cb8ad86f74fc0ea103.svg",
-    "index.html": "/index.html",
-    "main.b10eb3cd.css.map": "/static/css/main.b10eb3cd.css.map",
-    "main.da974b4e.js.map": "/static/js/main.da974b4e.js.map",
-    "453.61d2d260.chunk.js.map": "/static/js/453.61d2d260.chunk.js.map"
+    "main.css": "/book-finder-frontend/static/css/main.af907617.css",
+    "main.js": "/book-finder-frontend/static/js/main.50d41b4d.js",
+    "static/js/453.61d2d260.chunk.js": "/book-finder-frontend/static/js/453.61d2d260.chunk.js",
+    "static/media/pexels-esma-nur-63700357-11201148.jpg": "/book-finder-frontend/static/media/pexels-esma-nur-63700357-11201148.fe32125013d79dd946ef.jpg",
+    "static/media/header-logo(new).png": "/book-finder-frontend/static/media/header-logo(new).55363e8e3101391dd42f.png",
+    "static/media/CabinetGrotesk-Bold.otf": "/book-finder-frontend/static/media/CabinetGrotesk-Bold.2619526040c3adf53b83.otf",
+    "static/media/CabinetGrotesk-Medium.otf": "/book-finder-frontend/static/media/CabinetGrotesk-Medium.b8b578586abc9d55dcda.otf",
+    "static/media/modal-close-button.svg": "/book-finder-frontend/static/media/modal-close-button.dcddfede664628516ef675e795ba4b0d.svg",
+    "index.html": "/book-finder-frontend/index.html",
+    "static/media/modal-close-button-hover.svg": "/book-finder-frontend/static/media/modal-close-button-hover.f9cb8ad86f74fc0ea103.svg",
+    "main.af907617.css.map": "/book-finder-frontend/static/css/main.af907617.css.map",
+    "main.50d41b4d.js.map": "/book-finder-frontend/static/js/main.50d41b4d.js.map",
+    "453.61d2d260.chunk.js.map": "/book-finder-frontend/static/js/453.61d2d260.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b10eb3cd.css",
-    "static/js/main.da974b4e.js"
+    "static/css/main.af907617.css",
+    "static/js/main.50d41b4d.js"
   ]
 }
