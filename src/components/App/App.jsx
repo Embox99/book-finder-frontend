@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { getPopularBooks, searchBooks, getBookByYear } from "../../utils/Books";
 import Header from "../Header/Header";
@@ -192,7 +192,7 @@ function App() {
   }, [activeModal]);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="page">
         <div className="page__content">
           <Header
@@ -269,7 +269,7 @@ function App() {
           <UpdateProfile onClose={handleModalClose} />
         )}
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
