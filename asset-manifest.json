@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.b10eb3cd.css",
-    "main.js": "/static/js/main.dc124d8e.js",
+    "main.js": "/static/js/main.38036569.js",
     "static/media/pexels-esma-nur-63700357-11201148.jpg": "/static/media/pexels-esma-nur-63700357-11201148.fe32125013d79dd946ef.jpg",
     "static/media/header-logo(new).png": "/static/media/header-logo(new).55363e8e3101391dd42f.png",
     "static/media/CabinetGrotesk-Bold.otf": "/static/media/CabinetGrotesk-Bold.2619526040c3adf53b83.otf",
@@ -10,10 +10,10 @@
     "static/media/modal-close-button-hover.svg": "/static/media/modal-close-button-hover.f9cb8ad86f74fc0ea103.svg",
     "index.html": "/index.html",
     "main.b10eb3cd.css.map": "/static/css/main.b10eb3cd.css.map",
-    "main.dc124d8e.js.map": "/static/js/main.dc124d8e.js.map"
+    "main.38036569.js.map": "/static/js/main.38036569.js.map"
   },
   "entrypoints": [
     "static/css/main.b10eb3cd.css",
-    "static/js/main.dc124d8e.js"
+    "static/js/main.38036569.js"
   ]
 }
