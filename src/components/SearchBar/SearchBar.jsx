@@ -8,32 +8,26 @@ function SearchBar({ onSearch }) {
     setQuery(e.target.value);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     if (query.trim() !== "") {
       onSearch(query);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   return (
-    <div className="search-bar">
+    <form className="search-bar" onSubmit={handleSearch}>
       <input
         type="text"
         className="search-bar__input"
         value={query}
         onChange={handleInputChange}
-        onKeyDown={handleKeyPress}
         placeholder="Enter book title or author"
       />
-      <button className="search-bar__button" onClick={handleSearch}>
+      <button type="submit" className="search-bar__button">
         Search
       </button>
-    </div>
+    </form>
   );
 }
 

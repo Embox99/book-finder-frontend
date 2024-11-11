@@ -194,7 +194,7 @@ function App() {
   return (
     <HashRouter>
       <div className="page">
-        <div className="page__content">
+        <section className="page__content">
           <Header
             handleLoginClick={handleLoginClick}
             handleRegistrationClick={handleRegistrationClick}
@@ -231,7 +231,7 @@ function App() {
               }
             />
           </Routes>
-        </div>
+        </section>
         <Footer />
         {activeModal === "book" && selectedBook && (
           <BookModal

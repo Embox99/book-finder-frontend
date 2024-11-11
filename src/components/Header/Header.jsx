@@ -1,6 +1,6 @@
 import "./Header.css";
 import { Link } from "react-router-dom";
-import logo from "../../assets/header-logo(new).png";
+import logo from "../../assets/header-logo(optimized).png";
 
 function Header({ handleLoginClick, handleRegistrationClick }) {
   return (
@@ -8,7 +8,7 @@ function Header({ handleLoginClick, handleRegistrationClick }) {
       <Link to="/">
         <img src={logo} alt="header-logo" className="header__logo" />
       </Link>
-      <div className="header__btn-container">
+      <section className="header__btn-container">
         <button
           type="button"
           className="header__btn"
@@ -23,7 +23,7 @@ function Header({ handleLoginClick, handleRegistrationClick }) {
         >
           Log in
         </button>
-      </div>
+      </section>
     </header>
   );
 }

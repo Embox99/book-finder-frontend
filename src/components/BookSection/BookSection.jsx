@@ -2,7 +2,7 @@ import "./BookSection.css";
 
 function BookSection({ id, title, books = [], handleBookClick }) {
   return (
-    <div id={id} className="book-section">
+    <section id={id} className="book-section">
       <h2>{title}</h2>
       <div className="book-section__books">
         {books.length > 0 ? (
@@ -28,7 +28,7 @@ function BookSection({ id, title, books = [], handleBookClick }) {
           <p>There are no available books</p>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 

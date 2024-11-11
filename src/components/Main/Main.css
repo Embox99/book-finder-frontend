@@ -1,15 +1,15 @@
 .main-container {
   min-height: calc(100vh - 15vh);
   color: white;
-  font-family: "Cabinet Grotesk";
+  font-family: "Cabinet Grotesk", sans-serif;
   font-weight: 700;
   padding-bottom: 20px;
 }
 
-.main__search-tool {
+.search-tool {
   height: 35vh;
   background: linear-gradient(rgba(47, 147, 226, 0.7), rgba(47, 147, 226, 0.5)),
-    url("../../assets/pexels-esma-nur-63700357-11201148.jpg") center/cover
+    url("../../assets/main-page-background\(optimized\).jpg") center/cover
       no-repeat;
   padding: 20px;
   display: flex;

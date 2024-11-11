@@ -16,8 +16,8 @@ function BookModal({
   const { volumeInfo } = book;
 
   return (
-    <div className="book-modal">
-      <div className="book-modal__content">
+    <section className="book-modal">
+      <section className="book-modal__content">
         <button className="book-modal__close-btn" onClick={onClose}>
           ×
         </button>
@@ -34,7 +34,7 @@ function BookModal({
         <p className="book-modal__description">
           {volumeInfo?.description || "No description available"}
         </p>
-        <div className="book-modal__buttons">
+        <section className="book-modal__buttons">
           <button
             className="book-modal__favorite-btn"
             onClick={() => toggleFavorite(book.id)}
@@ -49,9 +49,9 @@ function BookModal({
           >
             {readBooks.includes(book.id) ? "Remove from Read" : "Mark as Read"}
           </button>
-        </div>
-      </div>
-    </div>
+        </section>
+      </section>
+    </section>
   );
 }
 

@@ -13,16 +13,16 @@ function Profile({
   yearBooks,
   handleBookClick,
   handleGoalClick,
-  handleUpdateProfileClick
+  handleUpdateProfileClick,
 }) {
   return (
     <div className="profile">
       <div className="profile__sidebar">
-        <Sidebar handleUpdateProfileClick={handleUpdateProfileClick}/>
+        <Sidebar handleUpdateProfileClick={handleUpdateProfileClick} />
       </div>
       <div className="profile__content">
         <Navigation />
-        <div className="profile__goals" id="goals">
+        <section className="profile__goals" id="goals">
           <h2 className="profile__goals-title">Your Reading Goal</h2>
           {readingGoal ? (
             <div className="profile__goals-content">
@@ -56,7 +56,7 @@ function Profile({
               Set your reading goal
             </button>
           )}
-        </div>
+        </section>
         <BookSection
           id="favorites"
           title="Your favorite books"

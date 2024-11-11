@@ -11,10 +11,10 @@ function Main({
 }) {
   return (
     <main className="main-container">
-      <div className="main__search-tool">
+      <section className="search-tool">
         <SearchBar onSearch={handleSearch} />
-      </div>
-      <div className="main__content">
+      </section>
+      <section className="main__content">
         {isSearching ? (
           <p>Loading search results...</p>
         ) : searchResults.length > 0 ? (
@@ -30,7 +30,7 @@ function Main({
             handleBookClick={handleBookClick}
           />
         )}
-      </div>
+      </section>
     </main>
   );
 }
