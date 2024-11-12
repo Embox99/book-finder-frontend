@@ -1,0 +1,42 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  z-index: 1;
+  margin-top: 60px;
+  background-color: #f7f7f7;
+  padding: 20px;
+  width: 200px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar__btn {
+  display: flex;
+  align-items: center;
+  border-style: none;
+  color: #333;
+  background-color: transparent;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  width: 100%;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar__btn:hover {
+  color: rgb(100, 100, 100);
+  cursor: pointer;
+}
+
+.sidebar__btn svg {
+  margin-right: 10px;
+}

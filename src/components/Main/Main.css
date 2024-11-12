@@ -1,0 +1,23 @@
+.main-container {
+  min-height: calc(100vh - 15vh);
+  color: white;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-weight: 700;
+  padding-bottom: 20px;
+}
+
+.search-tool {
+  height: 35vh;
+  background: linear-gradient(rgba(47, 147, 226, 0.7), rgba(47, 147, 226, 0.5)),
+    url("../../assets/main-page-background\(optimized\).jpg") center/cover
+      no-repeat;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main__content {
+  flex-grow: 1;
+  padding: 20px;
+}

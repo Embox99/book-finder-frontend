@@ -1,0 +1,127 @@
+.profile {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.profile__content {
+  flex-grow: 1;
+  margin-left: 22%;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.profile__sidebar {
+  margin-top: 20px;
+  width: 20%;
+  max-width: 300px;
+  min-width: 200px;
+  background-color: white;
+  padding: 20px;
+  position: fixed;
+  height: calc(100% - 20px);
+  box-sizing: border-box;
+}
+
+.profile__goals {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile__goals-title {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.profile__goals-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile__goal-info,
+.profile__goal-progress {
+  font-size: 1.2em;
+  color: #444;
+  margin: 10px 0;
+}
+
+.profile__goal-number {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.profile__goal-achieved {
+  background-color: #e0ffe0;
+  padding: 15px;
+  border-radius: 10px;
+  color: #007b00;
+  font-size: 1.1em;
+  margin: 15px 0;
+}
+
+.profile__goals-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
+  transition: background-color 0.3s, transform 0.2s;
+  cursor: pointer;
+}
+
+.profile__goals-btn--change {
+  background-color: rgba(47, 147, 226, 0.8);
+}
+
+.profile__goals-btn--change:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.profile__goals-btn--set {
+  background-color: #28a745;
+}
+
+.profile__goals-btn--set:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+@media (max-width: 1100px) {
+  .profile {
+    flex-direction: column;
+  }
+
+  .profile__sidebar {
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 30px;
+  }
+
+  .profile__content {
+    margin-left: 0;
+    padding-top: 20px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .profile__sidebar {
+    width: 300px;
+  }
+
+  .profile__content {
+    margin-left: 320px;
+  }
+}
