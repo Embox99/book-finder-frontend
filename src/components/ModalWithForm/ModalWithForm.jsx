@@ -9,18 +9,30 @@ function ModalWithForm({
   redirectButtonText,
   onClose,
   redirectButtonClick,
+  onSubmit,
+  isValid,
 }) {
   return (
     <div className={`modal ${isOpen ? "modal_opened" : ""}`}>
       <div className="modal__content">
         <h2 className="modal__title">{title}</h2>
         <button type="button" className="modal__close-btn" onClick={onClose}>
-          <img src={closeButton}  alt="close-btn" className="modal__close-btn-img"/>
+          <img
+            src={closeButton}
+            alt="close-btn"
+            className="modal__close-btn-img"
+          />
         </button>
-        <form className="modal__form">
+        <form className="modal__form" onSubmit={onSubmit}>
           {children}
           <div className="modal__buttons-container">
-            <button type="submit" className="modal__submit-btn">
+            <button
+              type="submit"
+              className={`modal__submit-btn ${
+                !isValid ? "modal__submit-disabled" : ""
+              }`}
+              disabled={`${isValid ? "" : "disabled"}`}
+            >
               {buttonText}
             </button>
             <button

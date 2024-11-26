@@ -1,6 +1,7 @@
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { getPopularBooks, searchBooks, getBookByYear } from "../../utils/Books";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
 import Footer from "../Footer/Footer";
@@ -11,6 +12,10 @@ import SetGoalModal from "../SetGoalModal/SetGoalModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import UpdateProfile from "../UpdateProfileModal/UpdateProfileModal";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
+import { getCurrentUser } from "../../utils/Api.js";
+import { setToken, getToken, removeToken } from "../../utils/token.js";
+import { registration, authorization, isTokenValid } from "../../utils/auth.js";
 
 function App() {
   const [isSearching, setIsSearching] = useState(false);
@@ -24,6 +29,13 @@ function App() {
   const [yearBooks, setYearBooks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    yearOfBirth: "",
+  });
 
   useEffect(() => {
     const savedReadBooks = JSON.parse(localStorage.getItem("readBooks")) || [];
@@ -37,7 +49,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    getBookByYear(2021)
+    getBookByYear(2023)
       .then((data) => {
         if (data && data.length > 0) {
           setYearBooks(data);
@@ -102,6 +114,61 @@ function App() {
   const handleModalClose = () => {
     setActiveModal(null);
     setSelectedBook(null);
+  };
+
+  const handleRegistration = (values, resetCurrentForm) => {
+    registration(values)
+      .then((res) => {
+        setIsLoggedIn(true);
+        setToken(res.token);
+        setUserData({
+          id: res._id,
+          name: res.name,
+          email: res.email,
+          yearOfBirth: res.yearOfBirth,
+        });
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch(console.error);
+  };
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+    getCurrentUser(token)
+      .then((res) => {
+        setIsLoggedIn(true);
+        setUserData(res);
+      })
+      .catch(console.error);
+  }, []);
+
+  const handleLogIn = (values, resetCurrentForm) => {
+    if (!values) return Promise.reject("No values provided");
+
+    return authorization(values)
+      .then((res) => {
+        const token = res.token;
+        setToken(token);
+        return isTokenValid(token);
+      })
+      .then((res) => {
+        setIsLoggedIn(true);
+        setUserData(res);
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch((err) => {
+        console.error("Authorization failed:", err);
+        return Promise.reject(err);
+      });
+  };
+
+  const handleLogOut = () => {
+    removeToken();
+    setIsLoggedIn(false);
+    setUserData({ id: "", name: "", avatarUrl: "" });
   };
 
   const setGoal = (goal) => {
@@ -191,83 +258,95 @@ function App() {
     };
   }, [activeModal]);
 
+  const currentUser = {
+    isLoggedIn,
+    userData,
+  };
+
   return (
     <HashRouter>
       <div className="page">
-        <section className="page__content">
-          <Header
-            handleLoginClick={handleLoginClick}
-            handleRegistrationClick={handleRegistrationClick}
-          />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Main
-                  handleSearch={handleSearch}
-                  isSearching={isSearching}
-                  searchResults={searchResults}
-                  popularBooks={popularBooks}
-                  handleBookClick={handleBookClick}
-                />
-              }
+        <CurrentUserContext.Provider value={currentUser}>
+          <section className="page__content">
+            <Header
+              handleLoginClick={handleLoginClick}
+              handleRegistrationClick={handleRegistrationClick}
             />
-            <Route
-              path="/profile"
-              element={
-                <Profile
-                  readingGoal={readingGoal}
-                  goalAchieved={goalAchieved}
-                  readBooks={readBooks}
-                  setGoal={setGoal}
-                  favorites={favorites}
-                  findBookById={findBookById}
-                  markAsRead={markAsRead}
-                  yearBooks={yearBooks}
-                  handleBookClick={handleBookClick}
-                  handleGoalClick={handleGoalClick}
-                  handleUpdateProfileClick={handleUpdateProfileClick}
-                />
-              }
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Main
+                    handleSearch={handleSearch}
+                    isSearching={isSearching}
+                    searchResults={searchResults}
+                    popularBooks={popularBooks}
+                    handleBookClick={handleBookClick}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile
+                      readingGoal={readingGoal}
+                      goalAchieved={goalAchieved}
+                      readBooks={readBooks}
+                      setGoal={setGoal}
+                      favorites={favorites}
+                      findBookById={findBookById}
+                      markAsRead={markAsRead}
+                      yearBooks={yearBooks}
+                      handleBookClick={handleBookClick}
+                      handleGoalClick={handleGoalClick}
+                      handleUpdateProfileClick={handleUpdateProfileClick}
+                      handleLogOut={handleLogOut}
+                    />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </section>
+          <Footer />
+          {activeModal === "book" && selectedBook && (
+            <BookModal
+              book={selectedBook}
+              isOpen={true}
+              onClose={handleModalClose}
+              toggleFavorite={toggleFavorite}
+              toggleRead={toggleRead}
+              favorites={favorites}
+              readBooks={readBooks}
+              className="modal"
             />
-          </Routes>
-        </section>
-        <Footer />
-        {activeModal === "book" && selectedBook && (
-          <BookModal
-            book={selectedBook}
-            isOpen={true}
-            onClose={handleModalClose}
-            toggleFavorite={toggleFavorite}
-            toggleRead={toggleRead}
-            favorites={favorites}
-            readBooks={readBooks}
-            className="modal"
-          />
-        )}
-        {activeModal === "goal" && (
-          <SetGoalModal
-            isOpen={true}
-            onClose={handleModalClose}
-            onSave={setGoal}
-            className="modal"
-          />
-        )}
-        {activeModal === "login" && (
-          <LoginModal
-            onClose={handleModalClose}
-            redirectButtonClick={handleRegistrationClick}
-          />
-        )}
-        {activeModal === "registration" && (
-          <RegistrationModal
-            onClose={handleModalClose}
-            redirectButtonClick={handleLoginClick}
-          />
-        )}
-        {activeModal === "update-profile" && (
-          <UpdateProfile onClose={handleModalClose} />
-        )}
+          )}
+          {activeModal === "goal" && (
+            <SetGoalModal
+              isOpen={true}
+              onClose={handleModalClose}
+              onSave={setGoal}
+              className="modal"
+            />
+          )}
+          {activeModal === "login" && (
+            <LoginModal
+              onClose={handleModalClose}
+              redirectButtonClick={handleRegistrationClick}
+              handleLogIn={handleLogIn}
+            />
+          )}
+          {activeModal === "registration" && (
+            <RegistrationModal
+              onClose={handleModalClose}
+              redirectButtonClick={handleLoginClick}
+              handleRegistration={handleRegistration}
+            />
+          )}
+          {activeModal === "update-profile" && (
+            <UpdateProfile onClose={handleModalClose} />
+          )}
+        </CurrentUserContext.Provider>
       </div>
     </HashRouter>
   );

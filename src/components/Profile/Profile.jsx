@@ -14,11 +14,15 @@ function Profile({
   handleBookClick,
   handleGoalClick,
   handleUpdateProfileClick,
+  handleLogOut,
 }) {
   return (
     <div className="profile">
       <div className="profile__sidebar">
-        <Sidebar handleUpdateProfileClick={handleUpdateProfileClick} />
+        <Sidebar
+          handleUpdateProfileClick={handleUpdateProfileClick}
+          handleLogOut={handleLogOut}
+        />
       </div>
       <div className="profile__content">
         <Navigation />
