@@ -8,7 +8,6 @@ function Profile({
   goalAchieved,
   readBooks,
   favorites,
-  findBookById,
   markAsRead,
   yearBooks,
   handleBookClick,
@@ -64,14 +63,14 @@ function Profile({
         <BookSection
           id="favorites"
           title="Your favorite books"
-          books={favorites.map(findBookById)}
+          books={favorites}
           markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />
         <BookSection
           id="read-books"
           title="Finished books"
-          books={readBooks.map(findBookById)}
+          books={readBooks}
           markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />

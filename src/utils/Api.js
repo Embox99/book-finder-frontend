@@ -1,6 +1,4 @@
-const BASE_URL = "production"
-  ? "https://api.book-finder.crabdance.com/"
-  : "http://localhost:3001";
+const BASE_URL = "http://localhost:3001";
 
 const checkServerResponce = (res) => {
   if (res.ok) {
@@ -36,8 +34,8 @@ function updateCurrentUser(data, token) {
 }
 
 function addFavoriteBook(data, token) {
-  return fetch(`${BASE_URL}/books/favorite`, {
-    method: "PUT",
+  return fetch(`${BASE_URL}/books/me/favorite`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -47,8 +45,8 @@ function addFavoriteBook(data, token) {
 }
 
 function addReadBook(data, token) {
-  return fetch(`${BASE_URL}/books/read`, {
-    method: "PUT",
+  return fetch(`${BASE_URL}/books/me/read`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -58,7 +56,8 @@ function addReadBook(data, token) {
 }
 
 function removeFavoriteBook(id, token) {
-  return fetch(`${BASE_URL}/books/favorite/${id}`, {
+  console.log("Book ID to be removed:", id);
+  return fetch(`${BASE_URL}/books/me/favorite/${id}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -69,7 +68,8 @@ function removeFavoriteBook(id, token) {
 }
 
 function removeReadBook(id, token) {
-  return fetch(`${BASE_URL}/books/read/${id}`, {
+  console.log("Book ID to be removed:", id);
+  return fetch(`${BASE_URL}/books/me/read/${id}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -80,7 +80,7 @@ function removeReadBook(id, token) {
 }
 
 function getUserFavoriteBooks(token) {
-  return fetch(`${BASE_URL}/books/favorite`, {
+  return fetch(`${BASE_URL}/books/me/favorite`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -91,7 +91,7 @@ function getUserFavoriteBooks(token) {
 }
 
 function getUserReadBooks(token) {
-  return fetch(`${BASE_URL}/books/read`, {
+  return fetch(`${BASE_URL}/books/me/read`, {
     method: "GET",
     headers: {
       Accept: "application/json",

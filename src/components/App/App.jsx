@@ -1,5 +1,5 @@
-import { Routes, Route, HashRouter } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { getPopularBooks, searchBooks, getBookByYear } from "../../utils/Books";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import Header from "../Header/Header";
@@ -13,7 +13,16 @@ import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import UpdateProfile from "../UpdateProfileModal/UpdateProfileModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
-import { getCurrentUser } from "../../utils/Api.js";
+import {
+  getCurrentUser,
+  updateCurrentUser,
+  getUserFavoriteBooks,
+  getUserReadBooks,
+  addFavoriteBook,
+  addReadBook,
+  removeFavoriteBook,
+  removeReadBook,
+} from "../../utils/Api.js";
 import { setToken, getToken, removeToken } from "../../utils/token.js";
 import { registration, authorization, isTokenValid } from "../../utils/auth.js";
 
@@ -25,7 +34,6 @@ function App() {
   const [goalAchieved, setGoalAchieved] = useState(false);
   const [popularBooks, setPopularBooks] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [allBooks, setAllBooks] = useState([]);
   const [yearBooks, setYearBooks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -37,19 +45,70 @@ function App() {
     yearOfBirth: "",
   });
 
+  const transformBookData = (book) => {
+    return {
+      bookId: book.id,
+      title: book.volumeInfo?.title || "Unknown Title",
+      author: book.volumeInfo?.authors?.[0] || "Unknown Author",
+      description: book.volumeInfo?.description || "",
+      publishedDate: book.volumeInfo?.publishedDate || "",
+      coverImage: book.volumeInfo?.imageLinks?.thumbnail || "",
+      isbn: book.volumeInfo?.industryIdentifiers?.[0]?.identifier || "",
+    };
+  };
+
+  const transformServerBookData = (book) => {
+    return {
+      kind: "books#volume",
+      id: book.bookId,
+      etag: book._id,
+      volumeInfo: {
+        title: book.title,
+        authors: [book.author],
+        description: book.description || "",
+        publishedDate: book.publishedDate || "",
+        imageLinks: {
+          thumbnail: book.coverImage || "",
+        },
+        industryIdentifiers: [
+          {
+            type: "ISBN",
+            identifier: book.isbn || "Unknown ISBN",
+          },
+        ],
+      },
+    };
+  };
+
   useEffect(() => {
-    const savedReadBooks = JSON.parse(localStorage.getItem("readBooks")) || [];
-    setReadBooks(savedReadBooks);
-    const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavorites(savedFavorites);
-    const savedReadingGoal = JSON.parse(localStorage.getItem("readingGoal"));
-    if (savedReadingGoal) {
-      setReadingGoal(savedReadingGoal);
-    }
+    const token = getToken();
+    if (!token) return;
+
+    getCurrentUser(token)
+      .then((res) => {
+        setIsLoggedIn(true);
+        setUserData(res);
+        return Promise.all([
+          getUserReadBooks(token),
+          getUserFavoriteBooks(token),
+        ]);
+      })
+      .then(([readBooksRes, favoriteBooksRes]) => {
+        const transformedReadBooks = readBooksRes.readBooks.map(
+          transformServerBookData
+        );
+        const transformedFavoriteBooks = favoriteBooksRes.favoriteBooks.map(
+          transformServerBookData
+        );
+
+        setReadBooks(transformedReadBooks);
+        setFavorites(transformedFavoriteBooks);
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
-    getBookByYear(2023)
+    getBookByYear(userData.yearOfBirth)
       .then((data) => {
         if (data && data.length > 0) {
           setYearBooks(data);
@@ -58,37 +117,7 @@ function App() {
         }
       })
       .catch((error) => console.error("Error when receiving books:", error));
-  }, []);
-
-  useEffect(() => {
-    if (readBooks.length > 0) {
-      localStorage.setItem("readBooks", JSON.stringify(readBooks));
-    }
-  }, [readBooks]);
-
-  useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-    }
-  }, [favorites]);
-
-  useEffect(() => {
-    if (readingGoal !== null) {
-      localStorage.setItem("readingGoal", JSON.stringify(readingGoal));
-    }
-  }, [readingGoal]);
-
-  const findBookById = (bookId) =>
-    yearBooks.find((book) => book.id === bookId) ||
-    popularBooks.find((book) => book.id === bookId) ||
-    searchResults.find((book) => book.id === bookId) ||
-    allBooks.find((book) => book.id === bookId);
-
-  const markAsRead = (bookId) => {
-    if (!readBooks.includes(bookId)) {
-      setReadBooks((prevReadBooks) => [...prevReadBooks, bookId]);
-    }
-  };
+  }, [userData.yearOfBirth]);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);
@@ -133,17 +162,6 @@ function App() {
       .catch(console.error);
   };
 
-  useEffect(() => {
-    const token = getToken();
-    if (!token) return;
-    getCurrentUser(token)
-      .then((res) => {
-        setIsLoggedIn(true);
-        setUserData(res);
-      })
-      .catch(console.error);
-  }, []);
-
   const handleLogIn = (values, resetCurrentForm) => {
     if (!values) return Promise.reject("No values provided");
 
@@ -156,6 +174,14 @@ function App() {
       .then((res) => {
         setIsLoggedIn(true);
         setUserData(res);
+        return Promise.all([
+          getUserReadBooks(getToken()),
+          getUserFavoriteBooks(getToken()),
+        ]);
+      })
+      .then(([readBooksRes, favoriteBooksRes]) => {
+        setReadBooks(readBooksRes.readBooks);
+        setFavorites(favoriteBooksRes.favoriteBooks);
         resetCurrentForm();
         handleModalClose();
       })
@@ -171,36 +197,99 @@ function App() {
     setUserData({ id: "", name: "", avatarUrl: "" });
   };
 
+  const handleUpdateUser = (data, resetCurrentForm) => {
+    const token = getToken();
+    updateCurrentUser(data, token)
+      .then((res) => {
+        setUserData(res);
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch(console.error);
+  };
+
   const setGoal = (goal) => {
     setReadingGoal(goal);
     setGoalAchieved(false);
     setReadBooks([]);
-    localStorage.removeItem("readBooks");
   };
 
-  const addBooks = useCallback((books) => {
-    setAllBooks((prevBooks) => {
-      const newBooks = books.filter(
-        (newBook) => !prevBooks.some((prevBook) => prevBook.id === newBook.id)
-      );
-      return [...prevBooks, ...newBooks];
-    });
-  }, []);
+  const toggleFavorite = (bookData) => {
+    const token = getToken();
+    const transformedBookData = transformBookData(bookData);
 
-  const toggleFavorite = (bookId) => {
-    if (favorites.includes(bookId)) {
-      setFavorites((prev) => prev.filter((id) => id !== bookId));
+    if (
+      !transformedBookData.bookId ||
+      !transformedBookData.title ||
+      !transformedBookData.author
+    ) {
+      console.error(
+        "Invalid book data for adding to favorites:",
+        transformedBookData
+      );
+      return;
+    }
+
+    if (favorites.some((book) => book.bookId === transformedBookData.bookId)) {
+      console.log("Removing book from favorites:", transformedBookData.bookId);
+      removeFavoriteBook(transformedBookData.bookId, token)
+        .then(() => {
+          setFavorites((prev) =>
+            prev.filter((book) => book.bookId !== transformedBookData.bookId)
+          );
+        })
+        .catch((err) => {
+          console.error("Error while removing book from favorites:", err);
+        });
     } else {
-      setFavorites((prev) => [...prev, bookId]);
+      console.log("Adding book to favorites:", transformedBookData.bookId);
+      addFavoriteBook(transformedBookData, token)
+        .then(() => {
+          setFavorites((prev) => [...prev, transformedBookData]);
+        })
+        .catch((err) => {
+          console.error("Error while adding book to favorites:", err);
+        });
     }
   };
 
-  const toggleRead = (bookId) => {
-    setReadBooks((prev) =>
-      prev.includes(bookId)
-        ? prev.filter((id) => id !== bookId)
-        : [...prev, bookId]
-    );
+  const toggleRead = (bookData) => {
+    const token = getToken();
+    const transformedBookData = transformBookData(bookData);
+
+    if (
+      !transformedBookData.bookId ||
+      !transformedBookData.title ||
+      !transformedBookData.author
+    ) {
+      console.error(
+        "Invalid book data for adding to read list:",
+        transformedBookData
+      );
+      return;
+    }
+
+    if (readBooks.some((book) => book.bookId === transformedBookData.bookId)) {
+      console.log("Removing book from read list:", transformedBookData.bookId);
+      removeReadBook(transformedBookData.bookId, token)
+        .then(() => {
+          setReadBooks((prev) =>
+            prev.filter((book) => book.bookId !== transformedBookData.bookId)
+          );
+        })
+        .catch((err) => {
+          console.error("Error while removing book from read list:", err);
+        });
+    } else {
+      console.log("Adding book to read list:", transformedBookData.bookId);
+      addReadBook(transformedBookData, token)
+        .then(() => {
+          setReadBooks((prev) => [...prev, transformedBookData]);
+        })
+        .catch((err) => {
+          console.error("Error while adding book to read list:", err);
+        });
+    }
   };
 
   useEffect(() => {
@@ -217,21 +306,19 @@ function App() {
         .then((data) => {
           if (data && data.length > 0) {
             setPopularBooks(data);
-            addBooks(data);
           } else {
             console.error("No books found");
           }
         })
         .catch((error) => console.error("Error when receiving books:", error));
     }
-  }, [setPopularBooks, addBooks, popularBooks.length]);
+  }, [setPopularBooks, popularBooks.length]);
 
   const handleSearch = (query) => {
     setIsSearching(true);
     searchBooks(query)
       .then((results) => {
         setSearchResults(results);
-        addBooks(results);
         setIsSearching(false);
       })
       .catch((error) => {
@@ -264,7 +351,7 @@ function App() {
   };
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="page">
         <CurrentUserContext.Provider value={currentUser}>
           <section className="page__content">
@@ -295,8 +382,7 @@ function App() {
                       readBooks={readBooks}
                       setGoal={setGoal}
                       favorites={favorites}
-                      findBookById={findBookById}
-                      markAsRead={markAsRead}
+                      markAsRead={toggleRead}
                       yearBooks={yearBooks}
                       handleBookClick={handleBookClick}
                       handleGoalClick={handleGoalClick}
@@ -344,11 +430,14 @@ function App() {
             />
           )}
           {activeModal === "update-profile" && (
-            <UpdateProfile onClose={handleModalClose} />
+            <UpdateProfile
+              onClose={handleModalClose}
+              handleUpdateUser={handleUpdateUser}
+            />
           )}
         </CurrentUserContext.Provider>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

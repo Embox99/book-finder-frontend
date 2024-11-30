@@ -13,7 +13,10 @@ function BookModal({
     return null;
   }
 
-  const { volumeInfo } = book;
+  const { volumeInfo, id: bookId } = book;
+
+  const isFavorite = favorites.some((favBook) => favBook.bookId === bookId);
+  const isRead = readBooks.some((readBook) => readBook.bookId === bookId);
 
   return (
     <section className="book-modal">
@@ -37,17 +40,15 @@ function BookModal({
         <section className="book-modal__buttons">
           <button
             className="book-modal__favorite-btn"
-            onClick={() => toggleFavorite(book.id)}
+            onClick={() => toggleFavorite(book)}
           >
-            {favorites.includes(book.id)
-              ? "Remove from Favorites"
-              : "Add to Favorites"}
+            {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
           </button>
           <button
             className="book-modal__read-btn"
-            onClick={() => toggleRead(book.id)}
+            onClick={() => toggleRead(book)}
           >
-            {readBooks.includes(book.id) ? "Remove from Read" : "Mark as Read"}
+            {isRead ? "Remove from Read" : "Mark as Read"}
           </button>
         </section>
       </section>
