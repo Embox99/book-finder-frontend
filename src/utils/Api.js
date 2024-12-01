@@ -104,6 +104,37 @@ function getUserReadBooks(token) {
   }).then(checkServerResponce);
 }
 
+const getUserGoal = (token) => {
+  return fetch(`${BASE_URL}/users/me/goal`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  }).then((res) => {
+    if (!res.ok) {
+      return Promise.reject(`Error: ${res.status}`);
+    }
+    return res.json();
+  });
+};
+
+const setUserGoal = (goal, token) => {
+  return fetch(`${BASE_URL}/users/me/goal`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ goal }),
+  }).then((res) => {
+    if (!res.ok) {
+      return Promise.reject(`Error: ${res.status}`);
+    }
+    return res.json();
+  });
+};
+
 export {
   checkServerResponce,
   updateCurrentUser,
@@ -114,4 +145,6 @@ export {
   removeReadBook,
   getUserFavoriteBooks,
   getUserReadBooks,
+  getUserGoal,
+  setUserGoal,
 };

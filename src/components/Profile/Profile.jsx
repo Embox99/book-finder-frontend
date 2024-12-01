@@ -8,7 +8,6 @@ function Profile({
   goalAchieved,
   readBooks,
   favorites,
-  markAsRead,
   yearBooks,
   handleBookClick,
   handleGoalClick,
@@ -64,21 +63,18 @@ function Profile({
           id="favorites"
           title="Your favorite books"
           books={favorites}
-          markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />
         <BookSection
           id="read-books"
           title="Finished books"
           books={readBooks}
-          markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />
         <BookSection
           id="year-of-birth"
           title="Popular books that came out on your year of birth"
           books={yearBooks}
-          markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />
       </div>

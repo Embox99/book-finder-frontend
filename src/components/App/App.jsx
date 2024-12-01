@@ -22,6 +22,8 @@ import {
   addReadBook,
   removeFavoriteBook,
   removeReadBook,
+  getUserGoal,
+  setUserGoal,
 } from "../../utils/Api.js";
 import { setToken, getToken, removeToken } from "../../utils/token.js";
 import { registration, authorization, isTokenValid } from "../../utils/auth.js";
@@ -105,6 +107,19 @@ function App() {
         setFavorites(transformedFavoriteBooks);
       })
       .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+
+    getUserGoal(token)
+      .then((goalData) => {
+        setReadingGoal(goalData.goal);
+      })
+      .catch((err) => {
+        console.error("Error fetching user goal:", err);
+      });
   }, []);
 
   useEffect(() => {
@@ -209,9 +224,14 @@ function App() {
   };
 
   const setGoal = (goal) => {
-    setReadingGoal(goal);
-    setGoalAchieved(false);
-    setReadBooks([]);
+    const token = getToken();
+    setUserGoal(goal, token)
+      .then(() => {
+        setReadingGoal(goal);
+      })
+      .catch((err) => {
+        console.error("Error setting user goal:", err);
+      });
   };
 
   const toggleFavorite = (bookData) => {
@@ -230,26 +250,30 @@ function App() {
       return;
     }
 
-    if (favorites.some((book) => book.bookId === transformedBookData.bookId)) {
-      console.log("Removing book from favorites:", transformedBookData.bookId);
-      removeFavoriteBook(transformedBookData.bookId, token)
-        .then(() => {
-          setFavorites((prev) =>
-            prev.filter((book) => book.bookId !== transformedBookData.bookId)
-          );
-        })
-        .catch((err) => {
-          console.error("Error while removing book from favorites:", err);
-        });
+    const isFavorite = favorites.some(
+      (book) => book.bookId === transformedBookData.bookId
+    );
+
+    if (isFavorite) {
+      setFavorites((prev) =>
+        prev.filter((book) => book.bookId !== transformedBookData.bookId)
+      );
+      console.log(favorites);
+
+      removeFavoriteBook(transformedBookData.bookId, token).catch((err) => {
+        console.error("Error while removing book from favorites:", err);
+        setFavorites((prev) => [...prev, transformedBookData]);
+      });
     } else {
-      console.log("Adding book to favorites:", transformedBookData.bookId);
-      addFavoriteBook(transformedBookData, token)
-        .then(() => {
-          setFavorites((prev) => [...prev, transformedBookData]);
-        })
-        .catch((err) => {
-          console.error("Error while adding book to favorites:", err);
-        });
+      setFavorites((prev) => [...prev, transformedBookData]);
+      console.log(favorites);
+
+      addFavoriteBook(transformedBookData, token).catch((err) => {
+        console.error("Error while adding book to favorites:", err);
+        setFavorites((prev) =>
+          prev.filter((book) => book.bookId !== transformedBookData.bookId)
+        );
+      });
     }
   };
 
@@ -269,26 +293,28 @@ function App() {
       return;
     }
 
-    if (readBooks.some((book) => book.bookId === transformedBookData.bookId)) {
-      console.log("Removing book from read list:", transformedBookData.bookId);
-      removeReadBook(transformedBookData.bookId, token)
-        .then(() => {
-          setReadBooks((prev) =>
-            prev.filter((book) => book.bookId !== transformedBookData.bookId)
-          );
-        })
-        .catch((err) => {
-          console.error("Error while removing book from read list:", err);
-        });
+    const isRead = readBooks.some(
+      (book) => book.bookId === transformedBookData.bookId
+    );
+
+    if (isRead) {
+      setReadBooks((prev) =>
+        prev.filter((book) => book.bookId !== transformedBookData.bookId)
+      );
+
+      removeReadBook(transformedBookData.bookId, token).catch((err) => {
+        console.error("Error while removing book from read list:", err);
+        setReadBooks((prev) => [...prev, transformedBookData]);
+      });
     } else {
-      console.log("Adding book to read list:", transformedBookData.bookId);
-      addReadBook(transformedBookData, token)
-        .then(() => {
-          setReadBooks((prev) => [...prev, transformedBookData]);
-        })
-        .catch((err) => {
-          console.error("Error while adding book to read list:", err);
-        });
+      setReadBooks((prev) => [...prev, transformedBookData]);
+
+      addReadBook(transformedBookData, token).catch((err) => {
+        console.error("Error while adding book to read list:", err);
+        setReadBooks((prev) =>
+          prev.filter((book) => book.bookId !== transformedBookData.bookId)
+        );
+      });
     }
   };
 
@@ -382,7 +408,6 @@ function App() {
                       readBooks={readBooks}
                       setGoal={setGoal}
                       favorites={favorites}
-                      markAsRead={toggleRead}
                       yearBooks={yearBooks}
                       handleBookClick={handleBookClick}
                       handleGoalClick={handleGoalClick}
