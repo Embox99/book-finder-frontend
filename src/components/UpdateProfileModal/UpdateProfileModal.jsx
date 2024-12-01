@@ -16,7 +16,7 @@ function UpdateProfile({ onClose, handleUpdateUser }) {
         email: userData.email || "",
       });
     }
-  }, [userData]);
+  }, [userData, setValues]);
 
   const resetCurrentForm = () => {
     resetForm({ username: "", email: "" });

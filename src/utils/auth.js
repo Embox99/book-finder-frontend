@@ -1,8 +1,9 @@
 import { checkServerResponce } from "./Api";
 
-const BASE_URL = "production"
+const BASE_URL = process.env.REACT_APP_PROD === 'true'
   ? "https://api.book-finder.crabdance.com"
   : "http://localhost:3001";
+
 
 export const registration = ({ name, yearOfBirth, email, password }) => {
   return fetch(`${BASE_URL}/signup`, {

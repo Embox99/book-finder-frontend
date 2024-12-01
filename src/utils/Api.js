@@ -1,6 +1,7 @@
-const BASE_URL = "production"
-  ? "https://api.book-finder.crabdance.com"
-  : "http://localhost:3001";
+const BASE_URL =
+  process.env.REACT_APP_PROD === "true"
+    ? "https://api.book-finder.crabdance.com"
+    : "http://localhost:3001";
 
 const checkServerResponce = (res) => {
   if (res.ok) {
