@@ -1,5 +1,5 @@
 const BASE_URL =
-  process.env.REACT_APP_PROD === "true"
+  process.env.NODE_ENV === "true"
     ? "https://api.book-finder.crabdance.com"
     : "http://localhost:3001";
 

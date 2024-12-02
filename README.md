@@ -4,6 +4,5 @@ Welcome to the Book Management App! This application helps users search for book
 
 **Backend repo**
 
-
-- [Link to Backend](https://api.book-finder.crabdance.com/)
+- [Link to Website](https://book-finder.crabdance.com/)
 - [Link to backend repo](https://github.com/Embox99/book-finder-backend)
