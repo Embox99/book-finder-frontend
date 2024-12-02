@@ -47,37 +47,19 @@ function App() {
     yearOfBirth: "",
   });
 
-  const transformBookData = (book) => {
+  const transformBookDataToServerFormat = (bookData) => {
     return {
-      bookId: book.id,
-      title: book.volumeInfo?.title || "Unknown Title",
-      author: book.volumeInfo?.authors?.[0] || "Unknown Author",
-      description: book.volumeInfo?.description || "",
-      publishedDate: book.volumeInfo?.publishedDate || "",
-      coverImage: book.volumeInfo?.imageLinks?.thumbnail || "",
-      isbn: book.volumeInfo?.industryIdentifiers?.[0]?.identifier || "",
-    };
-  };
-
-  const transformServerBookData = (book) => {
-    return {
-      kind: "books#volume",
-      id: book.bookId,
-      etag: book._id,
+      id: bookData.id,
+      etag: bookData.etag,
       volumeInfo: {
-        title: book.title,
-        authors: [book.author],
-        description: book.description || "",
-        publishedDate: book.publishedDate || "",
+        title: bookData.volumeInfo.title || "Unknown Title",
+        authors: bookData.volumeInfo.authors || ["Unknown Author"],
+        description: bookData.volumeInfo.description || "",
+        publishedDate: bookData.volumeInfo.publishedDate || "",
         imageLinks: {
-          thumbnail: book.coverImage || "",
+          thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || "",
         },
-        industryIdentifiers: [
-          {
-            type: "ISBN",
-            identifier: book.isbn || "Unknown ISBN",
-          },
-        ],
+        industryIdentifiers: bookData.volumeInfo.industryIdentifiers || [],
       },
     };
   };
@@ -96,15 +78,8 @@ function App() {
         ]);
       })
       .then(([readBooksRes, favoriteBooksRes]) => {
-        const transformedReadBooks = readBooksRes.readBooks.map(
-          transformServerBookData
-        );
-        const transformedFavoriteBooks = favoriteBooksRes.favoriteBooks.map(
-          transformServerBookData
-        );
-
-        setReadBooks(transformedReadBooks);
-        setFavorites(transformedFavoriteBooks);
+        setReadBooks(readBooksRes.readBooks);
+        setFavorites(favoriteBooksRes.favoriteBooks);
       })
       .catch(console.error);
   }, []);
@@ -236,12 +211,13 @@ function App() {
 
   const toggleFavorite = (bookData) => {
     const token = getToken();
-    const transformedBookData = transformBookData(bookData);
+
+    const transformedBookData = transformBookDataToServerFormat(bookData);
 
     if (
-      !transformedBookData.bookId ||
-      !transformedBookData.title ||
-      !transformedBookData.author
+      !transformedBookData.id ||
+      !transformedBookData.volumeInfo?.title ||
+      !transformedBookData.volumeInfo?.authors
     ) {
       console.error(
         "Invalid book data for adding to favorites:",
@@ -251,27 +227,25 @@ function App() {
     }
 
     const isFavorite = favorites.some(
-      (book) => book.bookId === transformedBookData.bookId
+      (book) => book.id === transformedBookData.id
     );
 
     if (isFavorite) {
       setFavorites((prev) =>
-        prev.filter((book) => book.bookId !== transformedBookData.bookId)
+        prev.filter((book) => book.id !== transformedBookData.id)
       );
-      console.log(favorites);
 
-      removeFavoriteBook(transformedBookData.bookId, token).catch((err) => {
+      removeFavoriteBook(transformedBookData.id, token).catch((err) => {
         console.error("Error while removing book from favorites:", err);
         setFavorites((prev) => [...prev, transformedBookData]);
       });
     } else {
       setFavorites((prev) => [...prev, transformedBookData]);
-      console.log(favorites);
 
       addFavoriteBook(transformedBookData, token).catch((err) => {
         console.error("Error while adding book to favorites:", err);
         setFavorites((prev) =>
-          prev.filter((book) => book.bookId !== transformedBookData.bookId)
+          prev.filter((book) => book.id !== transformedBookData.id)
         );
       });
     }
@@ -279,12 +253,12 @@ function App() {
 
   const toggleRead = (bookData) => {
     const token = getToken();
-    const transformedBookData = transformBookData(bookData);
+    const transformedBookData = transformBookDataToServerFormat(bookData);
 
     if (
-      !transformedBookData.bookId ||
-      !transformedBookData.title ||
-      !transformedBookData.author
+      !transformedBookData.id ||
+      !transformedBookData.volumeInfo?.title ||
+      !transformedBookData.volumeInfo?.authors
     ) {
       console.error(
         "Invalid book data for adding to read list:",
@@ -293,16 +267,14 @@ function App() {
       return;
     }
 
-    const isRead = readBooks.some(
-      (book) => book.bookId === transformedBookData.bookId
-    );
+    const isRead = readBooks.some((book) => book.id === transformedBookData.id);
 
     if (isRead) {
       setReadBooks((prev) =>
-        prev.filter((book) => book.bookId !== transformedBookData.bookId)
+        prev.filter((book) => book.id !== transformedBookData.id)
       );
 
-      removeReadBook(transformedBookData.bookId, token).catch((err) => {
+      removeReadBook(transformedBookData.id, token).catch((err) => {
         console.error("Error while removing book from read list:", err);
         setReadBooks((prev) => [...prev, transformedBookData]);
       });
@@ -312,7 +284,7 @@ function App() {
       addReadBook(transformedBookData, token).catch((err) => {
         console.error("Error while adding book to read list:", err);
         setReadBooks((prev) =>
-          prev.filter((book) => book.bookId !== transformedBookData.bookId)
+          prev.filter((book) => book.id !== transformedBookData.id)
         );
       });
     }

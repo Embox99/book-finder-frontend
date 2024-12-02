@@ -16,11 +16,8 @@ function BookModal({
   useEffect(() => {
     if (book) {
       const bookId = book.id;
-
-      console.log("Favorites:", favorites);
-      console.log("ReadBooks:", readBooks);
-      setIsFavorite(favorites.some((favBook) => favBook.bookId === bookId));
-      setIsRead(readBooks.some((readBook) => readBook.bookId === bookId));
+      setIsFavorite(favorites.some((favBook) => favBook.id === bookId));
+      setIsRead(readBooks.some((readBook) => readBook.id === bookId));
     }
   }, [book, favorites, readBooks]);
 
@@ -29,10 +26,12 @@ function BookModal({
   }
 
   const handleToggleFavorite = () => {
+    setIsFavorite((prevIsFavorite) => !prevIsFavorite);
     toggleFavorite(book);
   };
 
   const handleToggleRead = () => {
+    setIsRead((prevIsRead) => !prevIsRead);
     toggleRead(book);
   };
 
