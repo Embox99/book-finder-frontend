@@ -16,6 +16,9 @@ function BookModal({
   useEffect(() => {
     if (book) {
       const bookId = book.id;
+
+      console.log("Favorites:", favorites);
+      console.log("ReadBooks:", readBooks);
       setIsFavorite(favorites.some((favBook) => favBook.bookId === bookId));
       setIsRead(readBooks.some((readBook) => readBook.bookId === bookId));
     }
