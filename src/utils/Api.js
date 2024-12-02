@@ -1,5 +1,5 @@
 const BASE_URL =
-  process.env.NODE_ENV === "true"
+  process.env.NODE_ENV === "production"
     ? "https://api.book-finder.crabdance.com"
     : "http://localhost:3001";
 
