@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./BookModal.css";
 
 function BookModal({
@@ -9,9 +10,30 @@ function BookModal({
   favorites = [],
   readBooks = [],
 }) {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isRead, setIsRead] = useState(false);
+
+  useEffect(() => {
+    if (book) {
+      const bookId = book.id;
+      setIsFavorite(favorites.some((favBook) => favBook.id === bookId));
+      setIsRead(readBooks.some((readBook) => readBook.id === bookId));
+    }
+  }, [book, favorites, readBooks]);
+
   if (!isOpen) {
     return null;
   }
+
+  const handleToggleFavorite = () => {
+    setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+    toggleFavorite(book);
+  };
+
+  const handleToggleRead = () => {
+    setIsRead((prevIsRead) => !prevIsRead);
+    toggleRead(book);
+  };
 
   const { volumeInfo } = book;
 
@@ -37,17 +59,12 @@ function BookModal({
         <section className="book-modal__buttons">
           <button
             className="book-modal__favorite-btn"
-            onClick={() => toggleFavorite(book.id)}
+            onClick={handleToggleFavorite}
           >
-            {favorites.includes(book.id)
-              ? "Remove from Favorites"
-              : "Add to Favorites"}
+            {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
           </button>
-          <button
-            className="book-modal__read-btn"
-            onClick={() => toggleRead(book.id)}
-          >
-            {readBooks.includes(book.id) ? "Remove from Read" : "Mark as Read"}
+          <button className="book-modal__read-btn" onClick={handleToggleRead}>
+            {isRead ? "Remove from Read" : "Mark as Read"}
           </button>
         </section>
       </section>

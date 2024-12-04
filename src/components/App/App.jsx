@@ -1,6 +1,7 @@
-import { Routes, Route, HashRouter } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { getPopularBooks, searchBooks, getBookByYear } from "../../utils/Books";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
 import Footer from "../Footer/Footer";
@@ -11,6 +12,21 @@ import SetGoalModal from "../SetGoalModal/SetGoalModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import UpdateProfile from "../UpdateProfileModal/UpdateProfileModal";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
+import {
+  getCurrentUser,
+  updateCurrentUser,
+  getUserFavoriteBooks,
+  getUserReadBooks,
+  addFavoriteBook,
+  addReadBook,
+  removeFavoriteBook,
+  removeReadBook,
+  getUserGoal,
+  setUserGoal,
+} from "../../utils/Api.js";
+import { setToken, getToken, removeToken } from "../../utils/token.js";
+import { registration, authorization, isTokenValid } from "../../utils/auth.js";
 
 function App() {
   const [isSearching, setIsSearching] = useState(false);
@@ -20,24 +36,69 @@ function App() {
   const [goalAchieved, setGoalAchieved] = useState(false);
   const [popularBooks, setPopularBooks] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [allBooks, setAllBooks] = useState([]);
   const [yearBooks, setYearBooks] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    yearOfBirth: "",
+  });
+
+  const transformBookDataToServerFormat = (bookData) => {
+    return {
+      id: bookData.id,
+      etag: bookData.etag,
+      volumeInfo: {
+        title: bookData.volumeInfo.title || "Unknown Title",
+        authors: bookData.volumeInfo.authors || ["Unknown Author"],
+        description: bookData.volumeInfo.description || "",
+        publishedDate: bookData.volumeInfo.publishedDate || "",
+        imageLinks: {
+          thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || "",
+        },
+        industryIdentifiers: bookData.volumeInfo.industryIdentifiers || [],
+      },
+    };
+  };
 
   useEffect(() => {
-    const savedReadBooks = JSON.parse(localStorage.getItem("readBooks")) || [];
-    setReadBooks(savedReadBooks);
-    const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavorites(savedFavorites);
-    const savedReadingGoal = JSON.parse(localStorage.getItem("readingGoal"));
-    if (savedReadingGoal) {
-      setReadingGoal(savedReadingGoal);
-    }
+    const token = getToken();
+    if (!token) return;
+
+    getCurrentUser(token)
+      .then((res) => {
+        setIsLoggedIn(true);
+        setUserData(res);
+        return Promise.all([
+          getUserReadBooks(token),
+          getUserFavoriteBooks(token),
+        ]);
+      })
+      .then(([readBooksRes, favoriteBooksRes]) => {
+        setReadBooks(readBooksRes.readBooks);
+        setFavorites(favoriteBooksRes.favoriteBooks);
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
-    getBookByYear(2021)
+    const token = getToken();
+    if (!token) return;
+
+    getUserGoal(token)
+      .then((goalData) => {
+        setReadingGoal(goalData.goal);
+      })
+      .catch((err) => {
+        console.error("Error fetching user goal:", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    getBookByYear(userData.yearOfBirth)
       .then((data) => {
         if (data && data.length > 0) {
           setYearBooks(data);
@@ -46,37 +107,7 @@ function App() {
         }
       })
       .catch((error) => console.error("Error when receiving books:", error));
-  }, []);
-
-  useEffect(() => {
-    if (readBooks.length > 0) {
-      localStorage.setItem("readBooks", JSON.stringify(readBooks));
-    }
-  }, [readBooks]);
-
-  useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-    }
-  }, [favorites]);
-
-  useEffect(() => {
-    if (readingGoal !== null) {
-      localStorage.setItem("readingGoal", JSON.stringify(readingGoal));
-    }
-  }, [readingGoal]);
-
-  const findBookById = (bookId) =>
-    yearBooks.find((book) => book.id === bookId) ||
-    popularBooks.find((book) => book.id === bookId) ||
-    searchResults.find((book) => book.id === bookId) ||
-    allBooks.find((book) => book.id === bookId);
-
-  const markAsRead = (bookId) => {
-    if (!readBooks.includes(bookId)) {
-      setReadBooks((prevReadBooks) => [...prevReadBooks, bookId]);
-    }
-  };
+  }, [userData.yearOfBirth]);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);
@@ -104,36 +135,159 @@ function App() {
     setSelectedBook(null);
   };
 
-  const setGoal = (goal) => {
-    setReadingGoal(goal);
-    setGoalAchieved(false);
-    setReadBooks([]);
-    localStorage.removeItem("readBooks");
+  const handleRegistration = (values, resetCurrentForm) => {
+    registration(values)
+      .then((res) => {
+        setIsLoggedIn(true);
+        setToken(res.token);
+        setUserData({
+          id: res._id,
+          name: res.name,
+          email: res.email,
+          yearOfBirth: res.yearOfBirth,
+        });
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch(console.error);
   };
 
-  const addBooks = useCallback((books) => {
-    setAllBooks((prevBooks) => {
-      const newBooks = books.filter(
-        (newBook) => !prevBooks.some((prevBook) => prevBook.id === newBook.id)
-      );
-      return [...prevBooks, ...newBooks];
-    });
-  }, []);
+  const handleLogIn = (values, resetCurrentForm) => {
+    if (!values) return Promise.reject("No values provided");
 
-  const toggleFavorite = (bookId) => {
-    if (favorites.includes(bookId)) {
-      setFavorites((prev) => prev.filter((id) => id !== bookId));
+    return authorization(values)
+      .then((res) => {
+        const token = res.token;
+        setToken(token);
+        return isTokenValid(token);
+      })
+      .then((res) => {
+        setIsLoggedIn(true);
+        setUserData(res);
+        return Promise.all([
+          getUserReadBooks(getToken()),
+          getUserFavoriteBooks(getToken()),
+        ]);
+      })
+      .then(([readBooksRes, favoriteBooksRes]) => {
+        setReadBooks(readBooksRes.readBooks);
+        setFavorites(favoriteBooksRes.favoriteBooks);
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch((err) => {
+        console.error("Authorization failed:", err);
+        return Promise.reject(err);
+      });
+  };
+
+  const handleLogOut = () => {
+    removeToken();
+    setIsLoggedIn(false);
+    setUserData({ id: "", name: "", avatarUrl: "" });
+  };
+
+  const handleUpdateUser = (data, resetCurrentForm) => {
+    const token = getToken();
+    updateCurrentUser(data, token)
+      .then((res) => {
+        setUserData(res);
+        resetCurrentForm();
+        handleModalClose();
+      })
+      .catch(console.error);
+  };
+
+  const setGoal = (goal) => {
+    const token = getToken();
+    setUserGoal(goal, token)
+      .then(() => {
+        setReadingGoal(goal);
+      })
+      .catch((err) => {
+        console.error("Error setting user goal:", err);
+      });
+  };
+
+  const toggleFavorite = (bookData) => {
+    const token = getToken();
+
+    const transformedBookData = transformBookDataToServerFormat(bookData);
+
+    if (
+      !transformedBookData.id ||
+      !transformedBookData.volumeInfo?.title ||
+      !transformedBookData.volumeInfo?.authors
+    ) {
+      console.error(
+        "Invalid book data for adding to favorites:",
+        transformedBookData
+      );
+      return;
+    }
+
+    const isFavorite = favorites.some(
+      (book) => book.id === transformedBookData.id
+    );
+
+    if (isFavorite) {
+      setFavorites((prev) =>
+        prev.filter((book) => book.id !== transformedBookData.id)
+      );
+
+      removeFavoriteBook(transformedBookData.id, token).catch((err) => {
+        console.error("Error while removing book from favorites:", err);
+        setFavorites((prev) => [...prev, transformedBookData]);
+      });
     } else {
-      setFavorites((prev) => [...prev, bookId]);
+      setFavorites((prev) => [...prev, transformedBookData]);
+
+      addFavoriteBook(transformedBookData, token).catch((err) => {
+        console.error("Error while adding book to favorites:", err);
+        setFavorites((prev) =>
+          prev.filter((book) => book.id !== transformedBookData.id)
+        );
+      });
     }
   };
 
-  const toggleRead = (bookId) => {
-    setReadBooks((prev) =>
-      prev.includes(bookId)
-        ? prev.filter((id) => id !== bookId)
-        : [...prev, bookId]
-    );
+  const toggleRead = (bookData) => {
+    const token = getToken();
+    const transformedBookData = transformBookDataToServerFormat(bookData);
+
+    if (
+      !transformedBookData.id ||
+      !transformedBookData.volumeInfo?.title ||
+      !transformedBookData.volumeInfo?.authors
+    ) {
+      console.error(
+        "Invalid book data for adding to read list:",
+        transformedBookData
+      );
+      return;
+    }
+
+    const isRead = readBooks.some((book) => book.id === transformedBookData.id);
+
+    if (isRead) {
+      setReadBooks((prev) =>
+        prev.filter((book) => book.id !== transformedBookData.id)
+      );
+
+      removeReadBook(transformedBookData.id, token).catch((err) => {
+        console.error("Error while removing book from read list:", err);
+        setReadBooks((prev) => [...prev, transformedBookData]);
+      });
+    } else {
+      setReadBooks((prev) => [...prev, transformedBookData]);
+
+      addReadBook(transformedBookData, token).catch((err) => {
+        console.error("Error while adding book to read list:", err);
+        setReadBooks((prev) =>
+          prev.filter((book) => book.id !== transformedBookData.id)
+        );
+      });
+    }
   };
 
   useEffect(() => {
@@ -150,21 +304,19 @@ function App() {
         .then((data) => {
           if (data && data.length > 0) {
             setPopularBooks(data);
-            addBooks(data);
           } else {
             console.error("No books found");
           }
         })
         .catch((error) => console.error("Error when receiving books:", error));
     }
-  }, [setPopularBooks, addBooks, popularBooks.length]);
+  }, [setPopularBooks, popularBooks.length]);
 
   const handleSearch = (query) => {
     setIsSearching(true);
     searchBooks(query)
       .then((results) => {
         setSearchResults(results);
-        addBooks(results);
         setIsSearching(false);
       })
       .catch((error) => {
@@ -191,85 +343,98 @@ function App() {
     };
   }, [activeModal]);
 
+  const currentUser = {
+    isLoggedIn,
+    userData,
+  };
+
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="page">
-        <section className="page__content">
-          <Header
-            handleLoginClick={handleLoginClick}
-            handleRegistrationClick={handleRegistrationClick}
-          />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Main
-                  handleSearch={handleSearch}
-                  isSearching={isSearching}
-                  searchResults={searchResults}
-                  popularBooks={popularBooks}
-                  handleBookClick={handleBookClick}
-                />
-              }
+        <CurrentUserContext.Provider value={currentUser}>
+          <section className="page__content">
+            <Header
+              handleLoginClick={handleLoginClick}
+              handleRegistrationClick={handleRegistrationClick}
             />
-            <Route
-              path="/profile"
-              element={
-                <Profile
-                  readingGoal={readingGoal}
-                  goalAchieved={goalAchieved}
-                  readBooks={readBooks}
-                  setGoal={setGoal}
-                  favorites={favorites}
-                  findBookById={findBookById}
-                  markAsRead={markAsRead}
-                  yearBooks={yearBooks}
-                  handleBookClick={handleBookClick}
-                  handleGoalClick={handleGoalClick}
-                  handleUpdateProfileClick={handleUpdateProfileClick}
-                />
-              }
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Main
+                    handleSearch={handleSearch}
+                    isSearching={isSearching}
+                    searchResults={searchResults}
+                    popularBooks={popularBooks}
+                    handleBookClick={handleBookClick}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile
+                      readingGoal={readingGoal}
+                      goalAchieved={goalAchieved}
+                      readBooks={readBooks}
+                      setGoal={setGoal}
+                      favorites={favorites}
+                      yearBooks={yearBooks}
+                      handleBookClick={handleBookClick}
+                      handleGoalClick={handleGoalClick}
+                      handleUpdateProfileClick={handleUpdateProfileClick}
+                      handleLogOut={handleLogOut}
+                    />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </section>
+          <Footer />
+          {activeModal === "book" && selectedBook && (
+            <BookModal
+              book={selectedBook}
+              isOpen={true}
+              onClose={handleModalClose}
+              toggleFavorite={toggleFavorite}
+              toggleRead={toggleRead}
+              favorites={favorites}
+              readBooks={readBooks}
+              className="modal"
             />
-          </Routes>
-        </section>
-        <Footer />
-        {activeModal === "book" && selectedBook && (
-          <BookModal
-            book={selectedBook}
-            isOpen={true}
-            onClose={handleModalClose}
-            toggleFavorite={toggleFavorite}
-            toggleRead={toggleRead}
-            favorites={favorites}
-            readBooks={readBooks}
-            className="modal"
-          />
-        )}
-        {activeModal === "goal" && (
-          <SetGoalModal
-            isOpen={true}
-            onClose={handleModalClose}
-            onSave={setGoal}
-            className="modal"
-          />
-        )}
-        {activeModal === "login" && (
-          <LoginModal
-            onClose={handleModalClose}
-            redirectButtonClick={handleRegistrationClick}
-          />
-        )}
-        {activeModal === "registration" && (
-          <RegistrationModal
-            onClose={handleModalClose}
-            redirectButtonClick={handleLoginClick}
-          />
-        )}
-        {activeModal === "update-profile" && (
-          <UpdateProfile onClose={handleModalClose} />
-        )}
+          )}
+          {activeModal === "goal" && (
+            <SetGoalModal
+              isOpen={true}
+              onClose={handleModalClose}
+              onSave={setGoal}
+              className="modal"
+            />
+          )}
+          {activeModal === "login" && (
+            <LoginModal
+              onClose={handleModalClose}
+              redirectButtonClick={handleRegistrationClick}
+              handleLogIn={handleLogIn}
+            />
+          )}
+          {activeModal === "registration" && (
+            <RegistrationModal
+              onClose={handleModalClose}
+              redirectButtonClick={handleLoginClick}
+              handleRegistration={handleRegistration}
+            />
+          )}
+          {activeModal === "update-profile" && (
+            <UpdateProfile
+              onClose={handleModalClose}
+              handleUpdateUser={handleUpdateUser}
+            />
+          )}
+        </CurrentUserContext.Provider>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

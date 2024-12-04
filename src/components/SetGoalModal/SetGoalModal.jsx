@@ -1,15 +1,14 @@
 import "./SetGoalModal.css";
-import { useState } from "react";
+import { useFormValidation } from "../../utils/useFormValidation";
 
 function SetGoalModal({ isOpen, onClose, onSave }) {
-  const [goal, setGoal] = useState("");
+  const { values, handleChange, errors, isValid } = useFormValidation();
 
-  const handleSave = () => {
-    if (goal > 0) {
-      onSave(parseInt(goal, 10));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isValid) {
+      onSave(parseInt(values.goal, 10));
       onClose();
-    } else {
-      alert("The goal should be more than 0");
     }
   };
 
@@ -18,21 +17,45 @@ function SetGoalModal({ isOpen, onClose, onSave }) {
   }
 
   return (
-    <div className="goal-modal">
+    <form className="goal-modal" onSubmit={handleSubmit}>
       <div className="goal-modal__content">
         <h2 className="goal-modal__title">Set your reading goal</h2>
-        <input
-          type="number"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          placeholder="Set the number"
-        />
+        <label htmlFor="goal" className="goal-modal__label">
+          <input
+            type="number"
+            id="goal"
+            name="goal"
+            value={values.goal || ""}
+            onChange={handleChange}
+            placeholder="Set the number"
+            className="goal-modal__input"
+            required
+            min="1"
+          />
+          {errors.goal && (
+            <span className="goal-modal__error">{errors.goal}</span>
+          )}
+        </label>
         <div className="goal-modal__buttons">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={handleSave}>Save</button>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+            }}
+            className="goal-modal__button"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="goal-modal__button goal-modal__button--save"
+            disabled={!isValid}
+          >
+            Save
+          </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 

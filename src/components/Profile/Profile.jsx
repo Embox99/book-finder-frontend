@@ -8,17 +8,19 @@ function Profile({
   goalAchieved,
   readBooks,
   favorites,
-  findBookById,
-  markAsRead,
   yearBooks,
   handleBookClick,
   handleGoalClick,
   handleUpdateProfileClick,
+  handleLogOut,
 }) {
   return (
     <div className="profile">
       <div className="profile__sidebar">
-        <Sidebar handleUpdateProfileClick={handleUpdateProfileClick} />
+        <Sidebar
+          handleUpdateProfileClick={handleUpdateProfileClick}
+          handleLogOut={handleLogOut}
+        />
       </div>
       <div className="profile__content">
         <Navigation />
@@ -60,22 +62,19 @@ function Profile({
         <BookSection
           id="favorites"
           title="Your favorite books"
-          books={favorites.map(findBookById)}
-          markAsRead={markAsRead}
+          books={favorites}
           handleBookClick={handleBookClick}
         />
         <BookSection
           id="read-books"
           title="Finished books"
-          books={readBooks.map(findBookById)}
-          markAsRead={markAsRead}
+          books={readBooks}
           handleBookClick={handleBookClick}
         />
         <BookSection
           id="year-of-birth"
           title="Popular books that came out on your year of birth"
           books={yearBooks}
-          markAsRead={markAsRead}
           handleBookClick={handleBookClick}
         />
       </div>

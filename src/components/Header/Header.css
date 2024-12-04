@@ -12,7 +12,6 @@
 .header__logo {
   width: 89px;
   height: 40px;
-  
 }
 
 .header__btn-container {
@@ -33,4 +32,13 @@
 .header__btn:hover {
   color: rgb(100, 100, 100);
   cursor: pointer;
+}
+
+.header__element-hidden {
+  display: none;
+}
+
+.header__user-container a {
+  text-decoration: none;
+  color:black;
 }

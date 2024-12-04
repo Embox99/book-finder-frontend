@@ -1,7 +1,7 @@
 {
   "name": "book-finder-frontend",
   "version": "0.1.0",
-  "homepage": "https://embox99.github.io/book-finder-frontend",
+  "homepage": "https://book-finder.crabdance.com",
   "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "gh-pages": "^6.2.0"
   }
 }
