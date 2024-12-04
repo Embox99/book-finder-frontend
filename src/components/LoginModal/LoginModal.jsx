@@ -5,7 +5,8 @@ import { useFormValidation } from "../../utils/useFormValidation";
 
 function LoginModal({ onClose, redirectButtonClick, handleLogIn }) {
   const navigate = useNavigate();
-  const { values, handleChange, isValid, resetForm } = useFormValidation();
+  const { values, handleChange, isValid, errors, resetForm } =
+    useFormValidation();
 
   const resetCurrentForm = () => {
     resetForm({ email: "", password: "" });
@@ -44,6 +45,7 @@ function LoginModal({ onClose, redirectButtonClick, handleLogIn }) {
           value={values.email || ""}
           onChange={handleChange}
         />
+        {errors.email && <span className="modal__error">{errors.email}</span>}
       </label>
       <label htmlFor="user-password" className="modal__label">
         <input
@@ -56,6 +58,9 @@ function LoginModal({ onClose, redirectButtonClick, handleLogIn }) {
           value={values.password || ""}
           onChange={handleChange}
         />
+        {errors.password && (
+          <span className="modal__error">{errors.password}</span>
+        )}
       </label>
     </ModalWithForm>
   );

@@ -6,7 +6,7 @@ import { useFormValidation } from "../../utils/useFormValidation";
 
 function UpdateProfile({ onClose, handleUpdateUser }) {
   const { userData } = useContext(CurrentUserContext);
-  const { values, handleChange, isValid, setValues, resetForm } =
+  const { values, handleChange, isValid, setValues, resetForm, errors } =
     useFormValidation();
 
   useEffect(() => {
@@ -47,6 +47,7 @@ function UpdateProfile({ onClose, handleUpdateUser }) {
           value={values.name || ""}
           onChange={handleChange}
         />
+        {errors.name && <span className="modal__error">{errors.name}</span>}
       </label>
       <label htmlFor="email" className="modal__label">
         <input
@@ -59,6 +60,7 @@ function UpdateProfile({ onClose, handleUpdateUser }) {
           value={values.email || ""}
           onChange={handleChange}
         />
+        {errors.email && <span className="modal__error">{errors.email}</span>}
       </label>
     </ModalWithForm>
   );

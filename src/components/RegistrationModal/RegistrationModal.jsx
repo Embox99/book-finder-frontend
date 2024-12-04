@@ -7,10 +7,11 @@ function RegistrationModal({
   redirectButtonClick,
   handleRegistration,
 }) {
-  const { values, handleChange, isValid, resetForm } = useFormValidation();
+  const { values, handleChange, isValid, errors, resetForm } =
+    useFormValidation();
 
   const resetCurrentForm = () => {
-    resetForm({ email: "", password: "", name: "", avatarUrl: "" });
+    resetForm({ email: "", password: "", name: "", yearOfBirth: "" });
   };
 
   const handleSubmit = (e) => {
@@ -47,6 +48,7 @@ function RegistrationModal({
           onChange={handleChange}
           value={values.email || ""}
         />
+        {errors.email && <span className="modal__error">{errors.email}</span>}
       </label>
       <label htmlFor="password" className="modal__label">
         <input
@@ -59,6 +61,9 @@ function RegistrationModal({
           onChange={handleChange}
           value={values.password || ""}
         />
+        {errors.password && (
+          <span className="modal__error">{errors.password}</span>
+        )}
       </label>
       <label htmlFor="register-name" className="modal__label">
         <input
@@ -71,6 +76,7 @@ function RegistrationModal({
           onChange={handleChange}
           value={values.name || ""}
         />
+        {errors.name && <span className="modal__error">{errors.name}</span>}
       </label>
       <label htmlFor="date-of-birth" className="modal__label">
         <input
@@ -83,6 +89,9 @@ function RegistrationModal({
           onChange={handleChange}
           value={values.yearOfBirth || ""}
         />
+        {errors.yearOfBirth && (
+          <span className="modal__error">{errors.yearOfBirth}</span>
+        )}
       </label>
     </ModalWithForm>
   );

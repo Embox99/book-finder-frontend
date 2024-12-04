@@ -59,7 +59,6 @@ function addReadBook(data, token) {
 }
 
 function removeFavoriteBook(id, token) {
-  console.log("Book ID to be removed:", id);
   return fetch(`${BASE_URL}/books/me/favorite/${id}`, {
     method: "DELETE",
     headers: {
@@ -71,7 +70,6 @@ function removeFavoriteBook(id, token) {
 }
 
 function removeReadBook(id, token) {
-  console.log("Book ID to be removed:", id);
   return fetch(`${BASE_URL}/books/me/read/${id}`, {
     method: "DELETE",
     headers: {

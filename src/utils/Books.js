@@ -1,11 +1,10 @@
 import { checkServerResponce } from "./Api";
+const BASE_URL = "https://www.googleapis.com/books/v1/";
 
-const API_KEY = "AIzaSyDS87FTNMkojvpmlUKiA8qLbIm8NrYqGhQ";
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const searchBooks = async (query) => {
-  return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
-  )
+  return fetch(`${BASE_URL}volumes?q=${query}&key=${API_KEY}`)
     .then(checkServerResponce)
     .then((data) => data.items)
     .catch((error) => {
@@ -16,7 +15,7 @@ export const searchBooks = async (query) => {
 
 export const getPopularBooks = async () => {
   return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=relevance&key=${API_KEY}`
+    `${BASE_URL}volumes?q=subject:fiction&orderBy=relevance&key=${API_KEY}`
   )
     .then(checkServerResponce)
     .then((data) => {
@@ -34,7 +33,7 @@ export const getPopularBooks = async () => {
 
 export const getBookByYear = async (year) => {
   return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=subject:fiction+publishedDate:${year}&orderBy=relevance&maxResults=40&key=${API_KEY}`
+    `${BASE_URL}volumes?q=subject:fiction+publishedDate:${year}&orderBy=relevance&maxResults=40&key=${API_KEY}`
   )
     .then(checkServerResponce)
     .then((data) => {
