@@ -27,8 +27,8 @@ This project focuses on providing a modern, accessible, and interactive platform
 
 ***Profile Page***
 
-<img src="https://ibb.co/Pzsff0Z" alt="Profile Page" width="600"/>
+<img src="https://i.ibb.co/Qj711tF/profile-page.png" alt="Profile Page" width="600"/>
 
 **Main Page**
 
-<img src="https://ibb.co/QrDrddq" alt="Main Page" width="600"/>
+<img src="https://i.ibb.co/hDYDffn/main-page.png" alt="Main Page" width="600"/>
