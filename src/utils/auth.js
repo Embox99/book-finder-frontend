@@ -1,9 +1,6 @@
 import { checkServerResponce } from "./Api";
 
-const BASE_URL = process.env.NODE_ENV === 'production'
-  ? "https://api.book-finder.crabdance.com"
-  : "http://localhost:3001";
-
+const BASE_URL = "http://localhost:3001";
 
 export const registration = ({ name, yearOfBirth, email, password }) => {
   return fetch(`${BASE_URL}/signup`, {

@@ -49,17 +49,18 @@ function App() {
 
   const transformBookDataToServerFormat = (bookData) => {
     return {
-      id: bookData.id,
-      etag: bookData.etag,
+      id: bookData.key || bookData.cover_edition_key || bookData.id,
       volumeInfo: {
-        title: bookData.volumeInfo.title || "Unknown Title",
-        authors: bookData.volumeInfo.authors || ["Unknown Author"],
-        description: bookData.volumeInfo.description || "",
-        publishedDate: bookData.volumeInfo.publishedDate || "",
+        title: bookData.title || "Unknown Title",
+        authors: bookData.author_name || ["Unknown Author"], 
+        description: bookData.description?.value || bookData.description || "",
+        publishedDate: bookData.first_publish_year || "", 
         imageLinks: {
-          thumbnail: bookData.volumeInfo.imageLinks?.thumbnail || "",
-        },
-        industryIdentifiers: bookData.volumeInfo.industryIdentifiers || [],
+          thumbnail: bookData.cover_i
+            ? `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg`
+            : "",
+        }, 
+        industryIdentifiers: bookData.isbn || [],
       },
     };
   };
