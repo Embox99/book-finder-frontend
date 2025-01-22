@@ -22,3 +22,13 @@ This project focuses on providing a modern, accessible, and interactive platform
 
 **Backend repo**
 - [Link to backend repo](https://github.com/Embox99/book-finder-backend)
+
+**Screenshoots**
+
+***Profile Page***
+
+<img src="https://ibb.co/Pzsff0Z" alt="Profile Page" width="600"/>
+
+**Main Page**
+
+<img src="https://ibb.co/QrDrddq" alt="Main Page" width="600"/>
